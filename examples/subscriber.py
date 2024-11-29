@@ -2,8 +2,12 @@
 
 import asyncio
 import json
+import logging
 
+from aioconsole import ainput
 from squawkbus import SquawkbusClient, DataPacket
+
+LOG = logging.getLogger("subscriber")
 
 
 async def on_data(
@@ -13,40 +17,41 @@ async def on_data(
         data_packets: list[DataPacket]
 ) -> None:
     """Handle a data message"""
-    print(f'data: user="{user}",host="{host}",topic="{topic}"')
+    LOG.info('data: user="%s",host="%s",topic="%s"', user, host, topic)
 
     if not data_packets:
-        print("no data")
+        LOG.debug("no data")
         return
 
     for packet in data_packets:
 
-        print(f'packet entitlement={packet.entitlement}')
+        LOG.debug('packet entitlement=%s', packet.entitlement)
 
-        print(f'unpacking data with content_type={packet.content_type!r}')
+        LOG.debug('unpacking data with content_type="%s"', packet.content_type)
         if packet.content_type == "text/plain":
             data = packet.data.decode('utf8')
         elif packet.content_type == "application/json":
             data = json.loads(packet.data)
         else:
-            print("unhandled content type")
+            LOG.debug("unhandled content type")
             continue
 
-        print(data)
+        LOG.debug("data: %s", data)
 
 
 async def main():
     """Start the demo"""
     print('Example subscriber')
-    topic = input('Topic: ')
 
-    client = await SquawkbusClient.create('localhost', 9001)
+    client = await SquawkbusClient.create('localhost', 8558)
     client.data_handlers.append(on_data)
 
-    print(f"Subscribing to topic '{topic}'")
+    topic = await ainput('Topic: ')
+    LOG.info("Subscribing to topic '%s'", topic)
     await client.add_subscription(topic)
 
     await client.start()
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     asyncio.run(main())

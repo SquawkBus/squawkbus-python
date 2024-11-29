@@ -11,7 +11,7 @@ async def main():
     await aprint('Example publisher')
     topic = await ainput('Topic: ')
 
-    client = await SquawkbusClient.create('localhost', 9001)
+    client = await SquawkbusClient.create('localhost', 8558)
 
     console_task = asyncio.create_task(ainput('Message: '))
     client_task = asyncio.create_task(client.start())

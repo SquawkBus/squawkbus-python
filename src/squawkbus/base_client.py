@@ -25,7 +25,7 @@ from .messages import (
 from .frame_stream import FrameStream
 from .utils import read_aiter
 
-LOGGER = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 class BaseClient(metaclass=ABCMeta):
@@ -40,25 +40,29 @@ class BaseClient(metaclass=ABCMeta):
     ) -> None:
         self._frame_stream = FrameStream(reader, writer)
         self._credentials = credentials
-        self._read_queue: Queue = asyncio.Queue()
-        self._write_queue: Queue = asyncio.Queue()
+        self._read_queue: Queue[Message] = asyncio.Queue()
+        self._write_queue: Queue[Message] = asyncio.Queue()
         self._stop_event = asyncio.Event()
 
     async def _authenticate(self) -> None:
         if self._credentials is None:
-            authentication_request = AuthenticationRequest("none", "")
+            method, data = "none", ""
         else:
             username, password = self._credentials
             credentials = f"{username}:{password}"
             token = b64encode(credentials.encode('utf-8'))
-            authentication_request = AuthenticationRequest(
-                "basic",
-                token.decode('ascii')
-            )
+            method, data = "basic", token.decode('ascii')
 
-        await self._frame_stream.write(authentication_request.serialize())
+        authentication_request = AuthenticationRequest(method, data)
+
+        LOG.debug("sending authentication with method '%s'", method)
+        send_buf = authentication_request.serialize()
+        await self._frame_stream.write(send_buf)
+
+        LOG.debug("waiting for authentication response")
         recv_buf = await self._frame_stream.read()
         response = Message.deserialize(recv_buf)
+        LOG.debug("received authentication response: %s", response)
 
         if response.message_type != MessageType.AUTHENTICATION_RESPONSE:
             raise ValueError("invalid message")
@@ -96,7 +100,7 @@ class BaseClient(metaclass=ABCMeta):
 
         await self.on_closed(is_faulted)
 
-        LOGGER.info('Done')
+        LOG.info('Stopped')
 
     def stop(self) -> None:
         """Stop handling messages"""
@@ -279,12 +283,15 @@ class BaseClient(metaclass=ABCMeta):
         )
 
     async def _read(self) -> None:
-        message = await self._frame_stream.read()
+        buf = await self._frame_stream.read()
+        message = Message.deserialize(buf)
         await self._read_queue.put(message)
 
     async def _dequeue(self) -> Message:
-        return await self._read_queue.get()
+        message = await self._read_queue.get()
+        return message
 
     async def _write(self):
         message = await self._write_queue.get()
-        await self._frame_stream.write(message)
+        buf = message.serialize()
+        await self._frame_stream.write(buf)

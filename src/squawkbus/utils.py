@@ -9,10 +9,12 @@ from asyncio import (
     FIRST_COMPLETED,
     CancelledError
 )
-from typing import Any, AsyncIterator, Coroutine, Set, Callable, TypeVar
+from typing import AsyncIterator, Coroutine, Set, Callable, TypeVar
+
 
 # pylint: disable=invalid-name
 T = TypeVar('T')
+
 
 async def read_aiter(
         read: Callable[[], Coroutine[None, None, None]],
@@ -23,9 +25,9 @@ async def read_aiter(
     """Creates an async iterator from an action."""
 
     cancellation_task = create_task(cancellation_event.wait())
-    read_task: Task[Any] = create_task(read())
-    write_task: Task[Any] = create_task(write())
-    dequeue_task: Task[Any] = create_task(dequeue())
+    read_task: Task[None] = create_task(read(), name='read')
+    write_task: Task[None] = create_task(write(), name='write')
+    dequeue_task: Task[T] = create_task(dequeue(), name='dequeue')
 
     pending: Set[Future] = set()
     pending.add(cancellation_task)
@@ -36,7 +38,9 @@ async def read_aiter(
     is_faulted = False
 
     while not (cancellation_event.is_set() or is_faulted):
+
         done, pending = await wait(pending, return_when=FIRST_COMPLETED)
+
         for task in done:
 
             if task == cancellation_task:
@@ -47,16 +51,15 @@ async def read_aiter(
                 break
 
             if task == read_task:
-                read_task = create_task(read())
+                read_task = create_task(read(), name='read')
                 pending.add(read_task)
             elif task == write_task:
-                write_task = create_task(write())
+                write_task = create_task(write(), name='write')
                 pending.add(write_task)
             elif task == dequeue_task:
-                yield task.result()
-                dequeue_task = create_task(dequeue())
+                yield dequeue_task.result()
+                dequeue_task = create_task(dequeue(), name='dequeue')
                 pending.add(dequeue_task)
-
 
     for task in pending:
         try:

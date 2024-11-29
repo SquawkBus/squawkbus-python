@@ -23,7 +23,7 @@ async def main():
     """Start the demo"""
     await aprint('Example notifier')
     feed = await ainput('Feed: ')
-    client = await SquawkbusClient.create('localhost', 9001)
+    client = await SquawkbusClient.create('localhost', 8558)
     client.notification_handlers.append(on_notification)
     await aprint(f"Requesting notification of subscriptions on feed '{feed}'")
     await client.add_notification(feed)
