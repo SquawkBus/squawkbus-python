@@ -47,11 +47,11 @@ async def main(host: str):
 
     topic = input('Topic: ')
 
-    ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
 
     client = await SquawkbusClient.create(
         host,
-        9001,
+        8558,
         ssl=ssl_context,
         credentials=(username, password)
     )

@@ -40,9 +40,9 @@ async def main(host: str) -> None:
 
     topic = input('Topic: ')
 
-    ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
     client = await SquawkbusClient.create(
-        host, 9001,
+        host, 8558,
         ssl=ssl_context,
         credentials=(username, password)
     )
@@ -55,5 +55,8 @@ async def main(host: str) -> None:
     await client.start()
 
 if __name__ == '__main__':
-    fqdn = socket.getfqdn()
-    asyncio.run(main(fqdn))
+    try:
+        fqdn = socket.getfqdn()
+        asyncio.run(main(fqdn))
+    except KeyboardInterrupt:
+        pass
