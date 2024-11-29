@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a Python 3.8+ client for the [SquawkBus](https://github.com/SquawkBus/SquawkBus).
+This is a Python 3.11+ client for the [SquawkBus](https://github.com/SquawkBus/squawkbus).
 
 It follows the publish-subscribe pattern, and includes support for "notification" of
 a subscription by another client. This allows it to provide data on-demand.
@@ -19,19 +19,20 @@ import asyncio
 
 from squawkbus import CallbackClient
 
-async def on_data(user, host, feed, topic, data_packets, is_image):
-    print(f'data: user="{user}",host="{host}",feed="{feed}",topic="{topic}",is_image={is_image}')
+async def on_data(user, host, topic, data_packets):
+    print(f'data: user="{user}",host="{host}",topic="{topic}"')
     if not data_packets:
         print("no data")
-    else:
-        for packet in data_packets:
-            message = packet.data.decode('utf8') if packet.data else None
-            print(f'packet: entitlements={packet.entitlements},message={message}')
+        return
+
+    for packet in data_packets:
+        message = packet.data.decode('utf8') if packet.data else None
+        print(f'packet: entitlement={packet.entitlement},message={message}')
 
 async def main():
     client = await CallbackClient.create('localhost', 9001)
     client.data_handlers.append(on_data)
-    await client.add_subscription('TEST', 'FOO')
+    await client.add_subscription('FOO')
     await client.start()
 
 if __name__ == '__main__':
@@ -52,7 +53,7 @@ async def main():
     """Start the demo"""
     ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     client = await CallbackClient.create('myhost.example.com', 9001, ssl=ssl_context)
-    await client.add_subscription('TEST', 'FOO')
+    await client.add_subscription('FOO')
     await client.start()
 ```
 
