@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 from asyncio import Queue, StreamReader, StreamWriter
 import logging
-from ssl import SSLContext
+from ssl import SSLContext, Purpose, create_default_context
 from typing import Callable, Awaitable
 
 from .base_client import BaseClient
@@ -52,7 +52,7 @@ class SquawkbusClient(BaseClient):
             port: int,
             *,
             credentials: tuple[str, str] | None = None,
-            ssl: SSLContext | None = None
+            ssl: SSLContext | bool | None = None
     ) -> SquawkbusClient:
         """Create the client
 
@@ -65,6 +65,12 @@ class SquawkbusClient(BaseClient):
         Returns:
             CallbackClient: The connected client.
         """
+        if isinstance(ssl, bool):
+            ssl = (
+                create_default_context(Purpose.SERVER_AUTH)
+                if ssl
+                else None
+            )
 
         reader, writer = await asyncio.open_connection(host, port, ssl=ssl)
 

@@ -2,7 +2,6 @@
 
 import asyncio
 import socket
-import ssl
 
 from aioconsole import ainput, aprint
 
@@ -47,12 +46,10 @@ async def main(host: str):
 
     topic = input('Topic: ')
 
-    ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-
     client = await SquawkbusClient.create(
         host,
         8558,
-        ssl=ssl_context,
+        ssl=True,
         credentials=(username, password)
     )
 
