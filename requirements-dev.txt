@@ -1,8 +1,7 @@
-aioconsole==0.8.1
-pytest==8.3.3
-pytest-asyncio==0.24.0
-pylint==3.3.1
-mypy==1.13.0
-mkdocs==1.6.1
-mkdocs-material==9.5.45
-jetblack-markdown==1.2.0
+aioconsole == 0.8.1;
+click >= 8.1.7, < 9.0.0;
+
+mypy >= 1.13.0, < 2.0.0;
+pytest >= 8.3.3, < 9.0.0;
+pytest-asyncio == 0.24.0;
+pylint >= 3.3.1, < 4.0.0;
