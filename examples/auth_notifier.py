@@ -1,7 +1,9 @@
 """Authenticated notification subscriber"""
 
 import asyncio
-import socket
+import logging
+
+import click
 
 from squawkbus import SquawkbusClient
 
@@ -19,7 +21,7 @@ async def on_notification(
     )
 
 
-async def main(host: str) -> None:
+async def main_async(host: str, port: int) -> None:
     """Start the demo"""
     print("authenticated notifier")
 
@@ -31,22 +33,29 @@ async def main(host: str) -> None:
 
     username = input('Username: ')
     password = input('Password: ')
+    credentials = (username, password)
+
     topic = input('Topic: ')
 
-    client = await SquawkbusClient.create(
-        host,
-        8558,
-        ssl=True,
-        credentials=(username, password)
-    )
-
-    print(f"Requesting notification of subscriptions on topic '{topic}'")
+    client = await SquawkbusClient.create(host, port, credentials=credentials)
     client.notification_handlers.append(on_notification)
+
     await client.add_notification(topic)
 
-    print('Starting the client')
-    await client.start()
+    await client.wait_closed()
+
+
+@click.command()
+@click.option("-h", "--host", "host", type=str, default="localhost")
+@click.option("-p", "--port", "port", type=int, default=8558)
+def main(host: str, port: int) -> None:
+    try:
+        logging.basicConfig(level=logging.ERROR)
+        asyncio.run(main_async(host, port))
+    except KeyboardInterrupt:
+        pass
+
 
 if __name__ == '__main__':
-    fqdn = socket.getfqdn()
-    asyncio.run(main(fqdn))
+    # pylint: disable=no-value-for-parameter
+    main()

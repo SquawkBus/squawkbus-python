@@ -24,6 +24,27 @@
             "request": "launch",
             "program": "${workspaceFolder}/examples/simple_notifier.py",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Auth subscriber",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/auth_subscriber.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Auth publisher",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/auth_publisher.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Auth notifier",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/auth_notifier.py",
+            "console": "integratedTerminal"
         }
     ]
 }

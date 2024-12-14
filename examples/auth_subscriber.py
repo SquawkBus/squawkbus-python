@@ -1,29 +1,23 @@
 """Authenticated Subscriber"""
 
 import asyncio
-import socket
+import logging
+
+import click
 
 from squawkbus import SquawkbusClient, DataPacket
 
 
 async def on_data(
-        user: str,
+        sender: str,
         host: str,
         topic: str,
-        data_packets: list[DataPacket]
+        data: list[DataPacket]
 ) -> None:
-    """Handle a data message"""
-    print(f'data: user="{user}",host="{host}",topic="{topic}"')
-    if not data_packets:
-        print("no data")
-    else:
-        for packet in data_packets:
-            message = packet.data.decode('utf8') if packet.data else None
-            print(
-                f'packet: entitlement={packet.entitlement},message={message}')
+    print(f'sender="{sender}",host="{host}",topic="{topic}",data={data}')
 
 
-async def main(host: str) -> None:
+async def main_async(host: str, port: int) -> None:
     """Start the demo"""
 
     print("authenticated subscriber")
@@ -36,25 +30,29 @@ async def main(host: str) -> None:
 
     username = input('Username: ')
     password = input('Password: ')
+    credentials = (username, password)
 
     topic = input('Topic: ')
 
-    client = await SquawkbusClient.create(
-        host, 8558,
-        ssl=True,
-        credentials=(username, password)
-    )
-
-    print(f"Subscribing to topic '{topic}'")
+    client = await SquawkbusClient.create(host, port, credentials=credentials)
     client.data_handlers.append(on_data)
+
     await client.add_subscription(topic)
 
-    print('Starting the client')
-    await client.start()
+    await client.wait_closed()
 
-if __name__ == '__main__':
+
+@click.command()
+@click.option("-h", "--host", "host", type=str, default='localhost')
+@click.option("-p", "--port", "port", type=int, default=8558)
+def main(host: str, port: int) -> None:
     try:
-        fqdn = socket.getfqdn()
-        asyncio.run(main(fqdn))
+        logging.basicConfig(level=logging.ERROR)
+        asyncio.run(main_async(host, port))
     except KeyboardInterrupt:
         pass
+
+
+if __name__ == '__main__':
+    # pylint: disable=no-value-for-parameter
+    main()

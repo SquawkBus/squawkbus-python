@@ -1,40 +1,43 @@
 """Authenticated publisher"""
 
 import asyncio
-import socket
+import logging
 
 from aioconsole import ainput, aprint
+import click
 
 from squawkbus import SquawkbusClient, DataPacket
 
 
-async def read_console() -> list[DataPacket]:
-    """Read the data packets"""
-    await aprint('Enter an empty message finish the data packet. Entitlements can be empty')
-    await aprint('or a comma separated list of ints, e.g.: 1, 2, 3')
-    data_packets: list[DataPacket] = list()
-    while True:
-        entitlement = await ainput('Entitlement: ')
-        if not entitlement:
-            break
-        content_type = await ainput('Content Type: ')
-        if not content_type:
-            break
-        message = await ainput('Message: ')
-        if not message:
-            break
-        data_packet = DataPacket(
+async def get_message() -> tuple[str, list[DataPacket]]:
+    data_packets: list[DataPacket] = []
+
+    topic = await ainput('Topic: ')
+
+    ok = topic != ''
+    while ok:
+        entitlement = await ainput("Entitlement (<ENTER> to stop): ")
+        if entitlement == '':
+            ok = False
+            continue
+
+        content_type = await ainput("Content type (text/plain): ")
+        if content_type == '':
+            content_type = 'text/plain'
+
+        data = await ainput("Data: ")
+
+        packet = DataPacket(
             int(entitlement),
             content_type,
-            message.encode('utf8')
+            data.encode('utf-8')
         )
-        data_packets.append(data_packet)
-    return data_packets
+        data_packets.append(packet)
+
+    return topic, data_packets
 
 
-async def main(host: str):
-    print("authenticated publisher")
-
+async def main_async(host: str, port: int) -> None:
     print('Enter a username and password.')
     print('Known users are:')
     print('  username="tom", password="tom", roles=Subscribe')
@@ -43,43 +46,33 @@ async def main(host: str):
 
     username = input('Username: ')
     password = input('Password: ')
+    credentials = (username, password)
 
-    topic = input('Topic: ')
+    client = await SquawkbusClient.create(host, port, credentials=credentials)
 
-    client = await SquawkbusClient.create(
-        host,
-        8558,
-        ssl=True,
-        credentials=(username, password)
-    )
+    while True:
+        await aprint("Enter a new message")
+        topic, data_packets = await get_message()
+        if not topic:
+            break
 
-    print('starting the client')
-    console_task = asyncio.create_task(read_console())
-    client_task = asyncio.create_task(client.start())
-    pending = {
-        client_task,
-        console_task
-    }
+        await client.publish(topic, data_packets)
 
-    while pending:
+    client.close()
+    await client.wait_closed()
 
-        done, pending = await asyncio.wait(pending, return_when=asyncio.FIRST_COMPLETED)
 
-        for task in done:
-            if task == client_task:
-                break
-            elif task == console_task:
-                data_packets = console_task.result()
-                if not data_packets:
-                    client.stop()
-                else:
-                    print(
-                        f'Publishing to topic "{topic}" the data packets "{data_packets}"'
-                    )
-                    await client.publish(topic, data_packets)
-                    console_task = asyncio.create_task(read_console())
-                    pending.add(console_task)
+@click.command()
+@click.option("-h", "--host", "host", type=str, default="localhost")
+@click.option("-p", "--port", "port", type=int, default=8558)
+def main(host: str, port: int) -> None:
+    try:
+        logging.basicConfig(level=logging.ERROR)
+        asyncio.run(main_async(host, port))
+    except KeyboardInterrupt:
+        pass
+
 
 if __name__ == '__main__':
-    fqdn = socket.getfqdn()
-    asyncio.run(main(fqdn))
+    # pylint: disable=no-value-for-parameter
+    main()
