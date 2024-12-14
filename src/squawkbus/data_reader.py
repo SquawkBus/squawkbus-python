@@ -66,7 +66,7 @@ class DataReader:
             Optional[bytes]: The bytes or None.
         """
         count = self.read_int()
-        buf = self._read(count)
+        buf = bytes(self._read(count))
         return buf
 
     def read_data_packet(self) -> DataPacket:
