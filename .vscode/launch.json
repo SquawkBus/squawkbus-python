@@ -8,21 +8,21 @@
             "name": "Simple subscriber",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/examples/subscriber.py",
+            "program": "${workspaceFolder}/examples/simple_subscriber.py",
             "console": "integratedTerminal"
         },
         {
             "name": "Simple publisher",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/examples/publisher.py",
+            "program": "${workspaceFolder}/examples/simple_publisher.py",
             "console": "integratedTerminal"
         },
         {
             "name": "Simple notifier",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/examples/notifier.py",
+            "program": "${workspaceFolder}/examples/simple_notifier.py",
             "console": "integratedTerminal"
         }
     ]
