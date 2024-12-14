@@ -1,4 +1,4 @@
-"""Notification Subscriber"""
+"""Simple Notifier"""
 
 import asyncio
 import logging

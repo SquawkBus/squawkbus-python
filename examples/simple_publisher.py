@@ -1,4 +1,4 @@
-"""Simple Subscriber"""
+"""Simple Publisher"""
 
 import asyncio
 import logging
