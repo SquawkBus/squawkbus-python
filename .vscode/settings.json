@@ -1,0 +1,17 @@
+{
+    "[python]": {
+        "diffEditor.ignoreTrimWhitespace": false,
+        "gitlens.codeLens.symbolScopes": [
+            "!Module"
+        ],
+        "editor.formatOnType": true,
+        "editor.wordBasedSuggestions": "off",
+        "editor.rulers": [80],
+        "editor.formatOnSave": true
+    },
+    "cSpell.words": [
+        "ainput",
+        "aioconsole",
+        "squawkbus"
+    ]
+}

@@ -14,20 +14,21 @@ async def on_notification(
         topic: str,
         is_add: bool
 ) -> None:
-    """Handle a notification"""
     print(
-        f"on_notification: client_id={client_id},user='{user}',host='{host}',topic='{topic}'',is_add={is_add}")
+        f"client_id={client_id},user='{user}',host='{host}',topic='{topic}'',is_add={is_add}"
+    )
 
 
 async def main():
-    """Start the demo"""
-    await aprint('Example notifier')
-    feed = await ainput('Feed: ')
+    topic_pattern = input('Topic pattern: ')
+
     client = await SquawkbusClient.create('localhost', 8558)
     client.notification_handlers.append(on_notification)
-    await aprint(f"Requesting notification of subscriptions on feed '{feed}'")
-    await client.add_notification(feed)
-    await client.start()
+    
+    await aprint(f"Requesting notification of subscriptions on topic pattern '{topic_pattern}'")
+    await client.add_notification(topic_pattern)
+
+    await client.wait_closed()
 
 if __name__ == '__main__':
     asyncio.run(main())

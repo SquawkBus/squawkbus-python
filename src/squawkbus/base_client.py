@@ -3,7 +3,7 @@
 from __future__ import annotations
 from abc import ABCMeta, abstractmethod
 import asyncio
-from asyncio import Queue, StreamReader, StreamWriter
+from asyncio import Event, Queue, StreamReader, StreamWriter, Task
 from base64 import b64encode
 import logging
 from typing import cast
@@ -42,7 +42,9 @@ class BaseClient(metaclass=ABCMeta):
         self._credentials = credentials
         self._read_queue: Queue[Message] = asyncio.Queue()
         self._write_queue: Queue[Message] = asyncio.Queue()
-        self._stop_event = asyncio.Event()
+        self._stop_event = Event()
+        self._process_task: Task[None] | None = None
+        self._is_closed = Event()
 
     async def _authenticate(self) -> None:
         if self._credentials is None:
@@ -76,7 +78,10 @@ class BaseClient(metaclass=ABCMeta):
         """Start handling messages"""
 
         await self._authenticate()
+        self._process_task = asyncio.create_task(self._process_events())
 
+
+    async def _process_events(self) -> None:
         async for message in read_aiter(self._read, self._write, self._dequeue, self._stop_event):
             if message.message_type == MessageType.FORWARDED_MULTICAST_DATA:
                 await self._raise_multicast_data(
@@ -104,6 +109,13 @@ class BaseClient(metaclass=ABCMeta):
 
     def stop(self) -> None:
         """Stop handling messages"""
+        self._stop_event.set()
+
+    async def wait_closed(self) -> None:
+        if self._process_task is not None:
+            await self._process_task
+
+    def close(self) -> None:
         self._stop_event.set()
 
     async def _read_message(self) -> Message:

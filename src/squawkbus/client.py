@@ -52,7 +52,8 @@ class SquawkbusClient(BaseClient):
             port: int,
             *,
             credentials: tuple[str, str] | None = None,
-            ssl: SSLContext | bool | None = None
+            ssl: SSLContext | bool | None = None,
+            auto_start: bool = True
     ) -> SquawkbusClient:
         """Create the client
 
@@ -60,7 +61,8 @@ class SquawkbusClient(BaseClient):
             host (str): The host name of the distributor.
             port (int): The distributor port
             credentials (Optional[tuple[str, str]], optional): Optional credentials. Defaults to None.
-            ssl (Optional[SSLContext], optional): The context for an ssl connection. Defaults to None.
+            ssl (Optional[SSLContext | bool], optional): The context for an ssl connection. Defaults to None.
+            auto_start (Optional[bool], optional): Whether to start the client. Defaults to True.
 
         Returns:
             CallbackClient: The connected client.
@@ -74,7 +76,11 @@ class SquawkbusClient(BaseClient):
 
         reader, writer = await asyncio.open_connection(host, port, ssl=ssl)
 
-        return cls(reader, writer, credentials=credentials)
+        client = cls(reader, writer, credentials=credentials)
+        if auto_start:
+            await client.start()
+
+        return client
 
     @property
     def data_handlers(self) -> list[DataHandler]:

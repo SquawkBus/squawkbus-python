@@ -1,0 +1,29 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Simple subscriber",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/subscriber.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Simple publisher",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/publisher.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Simple notifier",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/notifier.py",
+            "console": "integratedTerminal"
+        }
+    ]
+}
