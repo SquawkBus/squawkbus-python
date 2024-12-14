@@ -1,8 +1,9 @@
 """Notification Subscriber"""
 
 import asyncio
+import logging
 
-from aioconsole import ainput, aprint
+import click
 
 from squawkbus import SquawkbusClient
 
@@ -19,16 +20,28 @@ async def on_notification(
     )
 
 
-async def main():
+async def main_async(host: str, port: int):
     topic_pattern = input('Topic pattern: ')
 
-    client = await SquawkbusClient.create('localhost', 8558)
+    client = await SquawkbusClient.create(host, port)
     client.notification_handlers.append(on_notification)
-    
-    await aprint(f"Requesting notification of subscriptions on topic pattern '{topic_pattern}'")
+
     await client.add_notification(topic_pattern)
 
     await client.wait_closed()
 
+
+@click.command()
+@click.option("-h", "--host", "host", type=str, default="localhost")
+@click.option("-p", "--port", "port", type=int, default=8558)
+def main(host: str, port: int) -> None:
+    try:
+        logging.basicConfig(level=logging.ERROR)
+        asyncio.run(main_async(host, port))
+    except KeyboardInterrupt:
+        pass
+
+
 if __name__ == '__main__':
-    asyncio.run(main())
+    # pylint: disable=no-value-for-parameter
+    main()
