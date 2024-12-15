@@ -9,6 +9,21 @@
         "editor.rulers": [80],
         "editor.formatOnSave": true
     },
+    "[markdown]": {
+        "editor.unicodeHighlight.ambiguousCharacters": false,
+        "editor.unicodeHighlight.invisibleCharacters": false,
+        "diffEditor.ignoreTrimWhitespace": false,
+        "editor.wordWrap": "on",
+        "editor.quickSuggestions": {
+            "comments": "off",
+            "strings": "off",
+            "other": "off"
+        },
+        "cSpell.fixSpellingWithRenameProvider": true,
+        "cSpell.advanced.feature.useReferenceProviderWithRename": true,
+        "cSpell.advanced.feature.useReferenceProviderRemove": "/^#+\\s/",
+        "editor.rulers": [80]
+    },
     "cSpell.words": [
         "ainput",
         "aioconsole",

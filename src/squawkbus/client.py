@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from asyncio import Queue, StreamReader, StreamWriter
+from pathlib import Path
 from ssl import SSLContext, Purpose, create_default_context
 from typing import Callable, Awaitable
 
@@ -50,7 +51,7 @@ class SquawkbusClient(BaseClient):
             port: int,
             *,
             credentials: tuple[str, str] | None = None,
-            ssl: SSLContext | str | bool | None = None,
+            ssl: SSLContext | str | Path | bool | None = None,
             auto_start: bool = True
     ) -> SquawkbusClient:
         """Create a squawkbus client.
@@ -61,7 +62,7 @@ class SquawkbusClient(BaseClient):
             credentials (tuple[str, str] | None, optional): Optional credentials.
                 If specified this is a tuple of the username and password.
                 Defaults to None.
-            ssl (SSLContext | str | bool | None, optional): An optional ssl
+            ssl (SSLContext | str | Path | bool | None, optional): An optional ssl
                 parameter. If None or false, TLS is not used. If true a default
                 ssl context is made. A string is used as the path to a bundle,
                 for use with self signed certificates. Finally a pre-built
@@ -72,8 +73,8 @@ class SquawkbusClient(BaseClient):
         Returns:
             SquawkbusClient: The squawkbus client
         """
-        if isinstance(ssl, (bool, str)):
-            cafile = ssl if isinstance(ssl, str) else None
+        if isinstance(ssl, (bool, str, Path)):
+            cafile = ssl if isinstance(ssl, (str, Path)) else None
             ssl = create_default_context(Purpose.SERVER_AUTH)
             if cafile is not None:
                 ssl.load_verify_locations(cafile)
