@@ -1,9 +1,6 @@
 """Authenticated Subscriber"""
 
 import asyncio
-import logging
-
-import click
 
 from squawkbus import SquawkbusClient, DataPacket
 
@@ -42,17 +39,8 @@ async def main_async(host: str, port: int) -> None:
     await client.wait_closed()
 
 
-@click.command()
-@click.option("-h", "--host", "host", type=str, default='localhost')
-@click.option("-p", "--port", "port", type=int, default=8558)
-def main(host: str, port: int) -> None:
+if __name__ == '__main__':
     try:
-        logging.basicConfig(level=logging.ERROR)
-        asyncio.run(main_async(host, port))
+        asyncio.run(main_async('localhost', 8558))
     except KeyboardInterrupt:
         pass
-
-
-if __name__ == '__main__':
-    # pylint: disable=no-value-for-parameter
-    main()

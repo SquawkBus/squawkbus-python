@@ -74,14 +74,17 @@ class BaseClient(metaclass=ABCMeta):
         if not message.is_authenticated:
             raise PermissionError("failed to authenticate")
 
+        LOG.debug("Authenticated")
+
     async def start(self) -> None:
         """Start handling messages"""
 
         await self._authenticate()
         self._process_task = asyncio.create_task(self._process_events())
 
-
     async def _process_events(self) -> None:
+        LOG.debug('Started')
+
         async for message in read_aiter(self._read, self._write, self._dequeue, self._stop_event):
             if message.message_type == MessageType.FORWARDED_MULTICAST_DATA:
                 await self._raise_multicast_data(
@@ -105,7 +108,7 @@ class BaseClient(metaclass=ABCMeta):
 
         await self.on_closed(is_faulted)
 
-        LOG.info('Stopped')
+        LOG.debug('Stopped')
 
     def stop(self) -> None:
         """Stop handling messages"""

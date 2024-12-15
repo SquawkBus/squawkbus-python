@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import asyncio
 from asyncio import Queue, StreamReader, StreamWriter
-import logging
 from ssl import SSLContext, Purpose, create_default_context
 from typing import Callable, Awaitable
 
@@ -12,7 +11,6 @@ from .base_client import BaseClient
 from .data_packet import DataPacket
 from .messages import Message
 
-LOGGER = logging.getLogger(__name__)
 
 DataHandler = Callable[
     [str, str, str, list[DataPacket]],
