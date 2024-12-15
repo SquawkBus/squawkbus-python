@@ -16,7 +16,7 @@ async def on_notification(
         is_add: bool
 ) -> None:
     print(
-        f"client_id={client_id},user='{user}',host='{host}',topic='{topic}'',is_add={is_add}"
+        f"client_id={client_id},user='{user}',host='{host}',topic='{topic}',is_add={is_add}"
     )
 
 
