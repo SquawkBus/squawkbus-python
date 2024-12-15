@@ -50,27 +50,33 @@ class SquawkbusClient(BaseClient):
             port: int,
             *,
             credentials: tuple[str, str] | None = None,
-            ssl: SSLContext | bool | None = None,
+            ssl: SSLContext | str | bool | None = None,
             auto_start: bool = True
     ) -> SquawkbusClient:
-        """Create the client
+        """Create a squawkbus client.
 
         Args:
-            host (str): The host name of the distributor.
-            port (int): The distributor port
-            credentials (Optional[tuple[str, str]], optional): Optional credentials. Defaults to None.
-            ssl (Optional[SSLContext | bool], optional): The context for an ssl connection. Defaults to None.
-            auto_start (Optional[bool], optional): Whether to start the client. Defaults to True.
+            host (str): The server host.
+            port (int): The server port.
+            credentials (tuple[str, str] | None, optional): Optional credentials.
+                If specified this is a tuple of the username and password.
+                Defaults to None.
+            ssl (SSLContext | str | bool | None, optional): An optional ssl
+                parameter. If None or false, TLS is not used. If true a default
+                ssl context is made. A string is used as the path to a bundle,
+                for use with self signed certificates. Finally a pre-built
+                SSLContext can be passed. Defaults to None.
+            auto_start (bool, optional): If true automatically start the client.
+                Defaults to True.
 
         Returns:
-            CallbackClient: The connected client.
+            SquawkbusClient: The squawkbus client
         """
-        if isinstance(ssl, bool):
-            ssl = (
-                create_default_context(Purpose.SERVER_AUTH)
-                if ssl
-                else None
-            )
+        if isinstance(ssl, (bool, str)):
+            cafile = ssl if isinstance(ssl, str) else None
+            ssl = create_default_context(Purpose.SERVER_AUTH)
+            if cafile is not None:
+                ssl.load_verify_locations(cafile)
 
         reader, writer = await asyncio.open_connection(host, port, ssl=ssl)
 

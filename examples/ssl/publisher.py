@@ -37,7 +37,7 @@ async def get_message() -> tuple[str, list[DataPacket]]:
     return topic, data_packets
 
 
-async def main(host: str, port: int, ssl: bool | SSLContext | None) -> None:
+async def main(host: str, port: int, ssl: bool | str | SSLContext | None) -> None:
     client = await SquawkbusClient.create(host, port, ssl=ssl)
 
     while True:
@@ -54,7 +54,9 @@ async def main(host: str, port: int, ssl: bool | SSLContext | None) -> None:
 
 if __name__ == '__main__':
     try:
-        fqdn = socket.getfqdn()
-        asyncio.run(main('localhost', 8558, True))
+        HOST = socket.getfqdn()
+        PORT = 8558
+        SSL = True
+        asyncio.run(main(HOST, PORT, SSL))
     except KeyboardInterrupt:
         pass
