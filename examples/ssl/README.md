@@ -74,3 +74,11 @@ client = await SquawkbusClient.create(
     ssl=context
 )
 ```
+
+## Server
+
+To use TLS the server must be running with tls.
+
+```bash
+squawkbus --tls server.crt server.key
+```
