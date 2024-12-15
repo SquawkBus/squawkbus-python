@@ -32,6 +32,8 @@ if __name__ == '__main__':
         HOST = socket.getfqdn()
         PORT = 8558
         SSL = True
+        # import os
+        # SSL = os.path.expanduser("~/.keys/cacerts.pem")
         asyncio.run(main(HOST, PORT, SSL))
     except KeyboardInterrupt:
         pass
