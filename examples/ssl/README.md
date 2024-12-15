@@ -30,20 +30,6 @@ The argument can be one of the following:
 * A pre-built SSLContext - For total control over the SSL context.
 * None or False - No do not use tls.
 
-### No TLS
-
-If TLS is not required, pass `None` for the `ssl` argument.
-
-```python
-client = await SquawkbusClient.create('localhost', 8553, ssl=None)
-```
-
-Or just omit it.
-
-```python
-client = await SquawkbusClient.create('localhost', 8553, ssl=None)
-```
-
 ### Default TLS
 
 If you want TLS the most simple way is to pass `True` to the `ssl` argument.
