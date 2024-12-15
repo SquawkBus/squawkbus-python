@@ -4,6 +4,20 @@ Transport layer security (TLS or historically SSL) can be used to
 encrypt the data sent between the client and the server. This is
 useful if the data is private, or when passwords are exchanged.
 
+## Server
+
+To use TLS the server must be running with tls.
+
+```bash
+squawkbus --tls server.crt server.key
+```
+
+The server should start with the following message.
+
+```
+Starting squawkbus on endpoint 0.0.0.0:8558 with TLS.
+```
+
 ## Overview
 
 To connect a client over using transport layer security
@@ -73,12 +87,4 @@ client = await SquawkbusClient.create(
     8553,
     ssl=context
 )
-```
-
-## Server
-
-To use TLS the server must be running with tls.
-
-```bash
-squawkbus --tls server.crt server.key
 ```
