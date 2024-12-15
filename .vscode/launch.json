@@ -8,42 +8,42 @@
             "name": "Simple subscriber",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/examples/simple_subscriber.py",
+            "program": "${workspaceFolder}/examples/simple/subscriber.py",
             "console": "integratedTerminal"
         },
         {
             "name": "Simple publisher",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/examples/simple_publisher.py",
+            "program": "${workspaceFolder}/examples/simple/publisher.py",
             "console": "integratedTerminal"
         },
         {
             "name": "Simple notifier",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/examples/simple_notifier.py",
+            "program": "${workspaceFolder}/examples/simple/notifier.py",
             "console": "integratedTerminal"
         },
         {
             "name": "Auth subscriber",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/examples/auth_subscriber.py",
+            "program": "${workspaceFolder}/examples/auth/subscriber.py",
             "console": "integratedTerminal"
         },
         {
             "name": "Auth publisher",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/examples/auth_publisher.py",
+            "program": "${workspaceFolder}/examples/auth/publisher.py",
             "console": "integratedTerminal"
         },
         {
             "name": "Auth notifier",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/examples/auth_notifier.py",
+            "program": "${workspaceFolder}/examples/auth/notifier.py",
             "console": "integratedTerminal"
         }
     ]
