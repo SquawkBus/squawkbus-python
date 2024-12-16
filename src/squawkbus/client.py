@@ -47,8 +47,8 @@ class SquawkbusClient(BaseClient):
     @classmethod
     async def create(
             cls,
-            host: str,
-            port: int,
+            host: str = 'localhost',
+            port: int = 8558,
             *,
             credentials: tuple[str, str] | None = None,
             ssl: SSLContext | str | Path | bool | None = None,
@@ -57,8 +57,8 @@ class SquawkbusClient(BaseClient):
         """Create a squawkbus client.
 
         Args:
-            host (str): The server host.
-            port (int): The server port.
+            host (str): The server host. Defaults to localhost
+            port (int): The server port. Defaults to 8558.
             credentials (tuple[str, str] | None, optional): Optional credentials.
                 If specified this is a tuple of the username and password.
                 Defaults to None.
