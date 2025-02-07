@@ -75,10 +75,11 @@ class DataReader:
         Returns:
             DataPacket: The data packet.
         """
+        name = self.read_string()
         entitlement = self.read_int()
         content_type = self.read_string()
         data = self.read_byte_array()
-        return DataPacket(entitlement, content_type, data)
+        return DataPacket(name, entitlement, content_type, data)
 
     def read_data_packet_array(self) -> list[DataPacket]:
         """Read an array of data packets.

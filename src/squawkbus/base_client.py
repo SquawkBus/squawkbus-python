@@ -45,17 +45,23 @@ class BaseClient(metaclass=ABCMeta):
         self._stop_event = Event()
         self._process_task: Task[None] | None = None
         self._is_closed = Event()
+        self._client_id: str | None = None
+
+    @property
+    def client_id(self) -> str | None:
+        return self._client_id
 
     async def _authenticate(self) -> None:
         if self._credentials is None:
-            method, data = "none", ""
+            method = "none"
+            token = b""
         else:
+            method = "basic"
             username, password = self._credentials
             credentials = f"{username}:{password}"
             token = b64encode(credentials.encode('utf-8'))
-            method, data = "basic", token.decode('ascii')
 
-        authentication_request = AuthenticationRequest(method, data)
+        authentication_request = AuthenticationRequest(method, token)
 
         LOG.debug("sending authentication with method '%s'", method)
         send_buf = authentication_request.serialize()
@@ -70,9 +76,7 @@ class BaseClient(metaclass=ABCMeta):
             raise ValueError("invalid message")
 
         message = cast(AuthenticationResponse, response)
-
-        if not message.is_authenticated:
-            raise PermissionError("failed to authenticate")
+        self._client_id = message.client_id
 
         LOG.debug("Authenticated")
 

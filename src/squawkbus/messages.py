@@ -327,36 +327,36 @@ class AuthenticationRequest(Message):
     def __init__(
             self,
             method: str,
-            data: str
+            credentials: bytes
     ) -> None:
         """A request for authentication.
 
         Args:
             method (str): The authentication method.
-            data (bytes): The credentials.
+            credentials (bytes): The credentials.
         """
         super().__init__(MessageType.AUTHENTICATION_REQUEST)
         self.method = method
-        self.data = data
+        self.credentials = credentials
 
     @classmethod
     def read_body(cls, reader: DataReader) -> Message:
         method = reader.read_string()
-        data = reader.read_string()
-        return AuthenticationRequest(method, data)
+        credentials = reader.read_byte_array()
+        return AuthenticationRequest(method, credentials)
 
     def write_body(self, writer: DataWriter) -> None:
         writer.write_string(self.method)
-        writer.write_string(self.data)
+        writer.write_byte_array(self.credentials)
 
     def __str__(self):
-        return f'AuthenticationRequest(method={self.method!r},data={self.data!r})'
+        return f'AuthenticationRequest(method={self.method!r},credentials={self.credentials!r})'
 
     def __eq__(self, value):
         return (
             isinstance(value, AuthenticationRequest) and
             self.method == value.method and
-            self.data == value.data
+            self.credentials == value.credentials
         )
 
 
@@ -365,32 +365,31 @@ class AuthenticationResponse(Message):
 
     def __init__(
             self,
-            is_authenticated: bool,
+            client_id: str,
     ) -> None:
         """The response to an authentication request.
 
         Args:
-            is_authenticated (bool): If true authentication is successful.
+            client_id (str): The id for the client, assigned by the broker.
         """
         super().__init__(MessageType.AUTHENTICATION_RESPONSE)
-        self.is_authenticated = is_authenticated
+        self.client_id = client_id
 
     @classmethod
     def read_body(cls, reader: DataReader) -> Message:
-        is_authenticated = reader.read_boolean()
-        return AuthenticationResponse(is_authenticated)
+        client_id = reader.read_string()
+        return AuthenticationResponse(client_id)
 
     def write_body(self, writer: DataWriter) -> None:
-        writer.write_boolean(self.is_authenticated)
+        writer.write_string(self.client_id)
 
     def __str__(self):
-        # pylint: disable=line-too-long
-        return f'AuthenticationResponse(is_authenticated={self.is_authenticated})'
+        return f'AuthenticationResponse(client_id={self.client_id})'
 
     def __eq__(self, value: Any) -> bool:
         return (
             isinstance(value, AuthenticationResponse) and
-            self.is_authenticated == value.is_authenticated
+            self.client_id == value.client_id
         )
 
 
