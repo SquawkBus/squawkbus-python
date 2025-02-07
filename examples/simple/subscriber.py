@@ -2,6 +2,8 @@
 
 import asyncio
 
+from aioconsole import aprint, ainput
+
 from squawkbus import SquawkbusClient, DataPacket
 
 
@@ -15,11 +17,12 @@ async def on_data(
 
 
 async def main_async(host: str, port: int):
-    topic = input('Topic: ')
 
     client = await SquawkbusClient.create(host, port)
+    await aprint(f"Connected as {client.client_id}")
     client.data_handlers.append(on_data)
 
+    topic = await ainput('Topic: ')
     await client.add_subscription(topic)
 
     await client.wait_closed()

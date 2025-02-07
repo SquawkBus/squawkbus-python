@@ -26,6 +26,7 @@ async def get_message() -> tuple[str, list[DataPacket]]:
         data = await ainput("Data: ")
 
         packet = DataPacket(
+            "message",
             int(entitlement),
             content_type,
             data.encode('utf-8')
@@ -38,6 +39,7 @@ async def get_message() -> tuple[str, list[DataPacket]]:
 async def main_async(host: str, port: int):
 
     client = await SquawkbusClient.create(host, port)
+    await aprint(f"Connected as {client.client_id}")
 
     while True:
         await aprint("Enter a new message")

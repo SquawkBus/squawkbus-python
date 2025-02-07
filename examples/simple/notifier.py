@@ -2,6 +2,8 @@
 
 import asyncio
 
+from aioconsole import aprint
+
 from squawkbus import SquawkbusClient
 
 
@@ -21,6 +23,7 @@ async def main_async(host: str, port: int):
     topic_pattern = input('Topic pattern: ')
 
     client = await SquawkbusClient.create(host, port)
+    await aprint(f"Connected as {client.client_id}")
     client.notification_handlers.append(on_notification)
 
     await client.add_notification(topic_pattern)
