@@ -45,6 +45,27 @@
             "request": "launch",
             "program": "${workspaceFolder}/examples/auth/notifier.py",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "SSL subscriber",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/ssl/subscriber.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "SSL publisher",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/ssl/publisher.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "SSL notifier",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/ssl/notifier.py",
+            "console": "integratedTerminal"
         }
     ]
 }
