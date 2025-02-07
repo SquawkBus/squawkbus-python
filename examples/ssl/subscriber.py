@@ -4,6 +4,8 @@ import asyncio
 import socket
 from ssl import SSLContext
 
+from aioconsole import ainput, aprint
+
 from squawkbus import SquawkbusClient, DataPacket
 
 
@@ -13,15 +15,17 @@ async def on_data(
         topic: str,
         data: list[DataPacket]
 ) -> None:
-    print(f'sender="{sender}",host="{host}",topic="{topic}",data={data}')
+    await aprint(f'sender="{sender}",host="{host}",topic="{topic}",data={data}')
 
 
 async def main(host: str, port: int, ssl: bool | str | SSLContext | None) -> None:
-    topic = input('Topic: ')
 
     client = await SquawkbusClient.create(host, port, ssl=ssl)
+    await aprint(f"Connected as {client.client_id}")
+
     client.data_handlers.append(on_data)
 
+    topic = await ainput('Topic: ')
     await client.add_subscription(topic)
 
     await client.wait_closed()
