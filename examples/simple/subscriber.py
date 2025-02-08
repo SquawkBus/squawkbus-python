@@ -1,6 +1,7 @@
 """Simple subscriber"""
 
 import asyncio
+import logging
 
 from aioconsole import aprint, ainput
 
@@ -29,6 +30,7 @@ async def main_async(host: str, port: int):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.WARNING)
     try:
         asyncio.run(main_async('localhost', 8558))
     except KeyboardInterrupt:

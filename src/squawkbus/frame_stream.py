@@ -1,7 +1,10 @@
 """FrameStream"""
 
 from asyncio import StreamReader, StreamWriter
+import logging
 import struct
+
+LOG = logging.getLogger(__name__)
 
 
 class FrameStream:
@@ -23,6 +26,7 @@ class FrameStream:
         """
         buf = await self._reader.readexactly(4)
         (count,) = struct.unpack('>i', buf)
+        LOG.debug("reading %s bytes", count)
         buf = await self._reader.readexactly(count)
         return buf
 
@@ -32,7 +36,10 @@ class FrameStream:
         Args:
             buf (bytes): The data to write.
         """
-        self._writer.write(struct.pack('>i', len(buf)))
+        count = len(buf)
+        LOG.debug("writing %s bytes", count)
+        len_buf = struct.pack('>i', count)
+        self._writer.write(len_buf)
         self._writer.write(buf)
         await self._writer.drain()
 

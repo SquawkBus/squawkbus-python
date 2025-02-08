@@ -47,9 +47,10 @@ class DataWriter:
             val (str): The string to write.
             encoding (str, optional): The encoding. Defaults to 'utf-8'.
         """
-        self.write_int(len(val))
+        buf = val.encode(encoding)
+        self.write_int(len(buf))
         if len(val) > 0:
-            self.buf += val.encode(encoding)
+            self.buf += buf
         return self
 
     def write_byte_array(self, val: bytes) -> DataWriter:
