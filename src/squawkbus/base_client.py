@@ -3,7 +3,7 @@
 from __future__ import annotations
 from abc import ABCMeta, abstractmethod
 import asyncio
-from asyncio import Event, Queue, StreamReader, StreamWriter, Task
+from asyncio import Event, Queue, Task
 from base64 import b64encode
 import logging
 from typing import cast
@@ -22,7 +22,7 @@ from .messages import (
     ForwardedMulticastData,
     ForwardedUnicastData
 )
-from .frame_stream import FrameStream
+from .types import MessageStream
 from .utils import read_aiter
 
 LOG = logging.getLogger(__name__)
@@ -33,12 +33,11 @@ class BaseClient(metaclass=ABCMeta):
 
     def __init__(
             self,
-            reader: StreamReader,
-            writer: StreamWriter,
+            stream: MessageStream,
             *,
             credentials: tuple[str, str] | None = None
     ) -> None:
-        self._frame_stream = FrameStream(reader, writer)
+        self._frame_stream = stream
         self._credentials = credentials
         self._read_queue: Queue[Message] = asyncio.Queue()
         self._write_queue: Queue[Message] = asyncio.Queue()

@@ -30,6 +30,7 @@
         "aprint",
         "cacerts",
         "cafile",
+        "setuptools",
         "squawkbus"
     ]
 }

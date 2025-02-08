@@ -6,7 +6,7 @@ from ssl import SSLContext
 
 from aioconsole import ainput, aprint
 
-from squawkbus import SquawkbusClient, DataPacket
+from squawkbus import SocketClient, DataPacket
 
 
 async def on_data(
@@ -20,7 +20,7 @@ async def on_data(
 
 async def main(host: str, port: int, ssl: bool | str | SSLContext | None) -> None:
 
-    client = await SquawkbusClient.create(host, port, ssl=ssl)
+    client = await SocketClient.create(host, port, ssl=ssl)
     await aprint(f"Connected as {client.client_id}")
 
     client.data_handlers.append(on_data)

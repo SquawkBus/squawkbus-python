@@ -1,9 +1,5 @@
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
-
 [project]
-name = "sqauwkbus"
+name = "squawkbus"
 version = "1.0.0"
 authors = [
   { name="Rob Blackbourn", email="rob.blackbourn@gmail.com" },
@@ -17,6 +13,13 @@ classifiers = [
 ]
 readme = "README.md"
 
+[project.optional-dependencies]
+websockets = ["websockets >= 14.2"]
+
 [project.urls]
 Homepage = "https://github.com/squawkbus/squawkbus-python"
 Issues = "https://github.com/squawkbus/squawkbus-python/issues"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

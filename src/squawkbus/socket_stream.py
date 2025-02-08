@@ -1,19 +1,36 @@
 """FrameStream"""
 
+from __future__ import annotations
+
+import asyncio
 from asyncio import StreamReader, StreamWriter
 import logging
+from ssl import SSLContext
 import struct
+
+from .types import MessageStream
 
 LOG = logging.getLogger(__name__)
 
 
-class FrameStream:
+class SocketStream(MessageStream):
     """A frame is a buffer that is transmitted as a 4 byte length, followed by
     the bytes."""
 
     def __init__(self, reader: StreamReader, writer: StreamWriter) -> None:
         self._reader = reader
         self._writer = writer
+
+    @classmethod
+    async def create(
+            cls,
+            host: str = 'localhost',
+            port: int = 8558,
+            ssl: SSLContext | None = None,
+    ) -> SocketStream:
+        reader, writer = await asyncio.open_connection(host, port, ssl=ssl)
+
+        return SocketStream(reader, writer)
 
     async def read(self) -> bytes:
         """Read a frame from the input stream.

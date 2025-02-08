@@ -5,7 +5,7 @@ import logging
 
 from aioconsole import aprint, ainput
 
-from squawkbus import SquawkbusClient, DataPacket
+from squawkbus import SocketClient, DataPacket
 
 
 async def on_data(
@@ -19,7 +19,7 @@ async def on_data(
 
 async def main_async(host: str, port: int):
 
-    client = await SquawkbusClient.create(host, port)
+    client = await SocketClient.create(host, port)
     await aprint(f"Connected as {client.client_id}")
     client.data_handlers.append(on_data)
 

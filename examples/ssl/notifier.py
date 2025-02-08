@@ -6,7 +6,7 @@ from ssl import SSLContext
 
 from aioconsole import ainput, aprint
 
-from squawkbus import SquawkbusClient
+from squawkbus import SocketClient
 
 
 async def on_notification(
@@ -23,7 +23,7 @@ async def on_notification(
 
 async def main(host: str, port: int, ssl: bool | str | SSLContext | None) -> None:
 
-    client = await SquawkbusClient.create(host, port, ssl=ssl)
+    client = await SocketClient.create(host, port, ssl=ssl)
     await aprint(f"Connected as {client.client_id}")
 
     client.notification_handlers.append(on_notification)
