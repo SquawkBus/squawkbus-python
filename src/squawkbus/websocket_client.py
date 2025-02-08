@@ -17,7 +17,7 @@ class WebsocketClient(CallbackClient):
     async def create(
             cls,
             host: str = 'localhost',
-            port: int = 8558,
+            port: int = 8559,
             *,
             credentials: tuple[str, str] | None = None,
             ssl: SSLContext | str | Path | bool | None = None,
