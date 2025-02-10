@@ -9,6 +9,8 @@ from asyncio import (
     FIRST_COMPLETED,
     CancelledError
 )
+from pathlib import Path
+from ssl import SSLContext, Purpose, create_default_context
 from typing import AsyncIterator, Coroutine, Set, Callable, TypeVar
 
 
@@ -67,3 +69,14 @@ async def read_aiter(
             await task
         except CancelledError:
             pass
+
+
+def make_ssl_context(ssl: SSLContext | str | Path | bool | None = None) -> SSLContext | None:
+
+    if isinstance(ssl, (bool, str, Path)):
+        cafile = ssl if isinstance(ssl, (str, Path)) else None
+        ssl = create_default_context(Purpose.SERVER_AUTH)
+        if cafile is not None:
+            ssl.load_verify_locations(cafile)
+
+    return ssl

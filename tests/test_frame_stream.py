@@ -3,7 +3,7 @@
 from asyncio import IncompleteReadError, StreamReader, StreamWriter
 import pytest
 
-from squawkbus.frame_stream import FrameStream
+from squawkbus.socket_stream import SocketStream
 
 # from tests.mock_streams import MockStreamReader, MockStreamWriter
 
@@ -40,7 +40,7 @@ async def test_roundtrip():
 
     buf = bytearray()
     reader, writer = MockStreamReader(buf), MockStreamWriter(buf)
-    frame_stream = FrameStream(reader, writer)
+    frame_stream = SocketStream(reader, writer)
     buf_in = b'This is not a test'
     await frame_stream.write(buf_in)
     buf_out = await frame_stream.read()

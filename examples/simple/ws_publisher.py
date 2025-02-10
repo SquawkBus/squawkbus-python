@@ -5,7 +5,7 @@ import logging
 
 from aioconsole import ainput, aprint
 
-from squawkbus import SocketClient, DataPacket
+from squawkbus import WebsocketClient, DataPacket
 
 
 async def get_message() -> tuple[str, list[DataPacket]]:
@@ -39,7 +39,7 @@ async def get_message() -> tuple[str, list[DataPacket]]:
 
 async def main_async(host: str, port: int):
 
-    client = await SocketClient.create(host, port)
+    client = await WebsocketClient.create(host, port)
     await aprint(f"Connected as {client.client_id}")
 
     while True:
@@ -57,6 +57,6 @@ async def main_async(host: str, port: int):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.WARNING)
     try:
-        asyncio.run(main_async('localhost', 8558))
+        asyncio.run(main_async('localhost', 8559))
     except KeyboardInterrupt:
         pass
