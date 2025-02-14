@@ -4,7 +4,11 @@ from __future__ import annotations
 
 from ssl import SSLContext
 
-from websockets.asyncio.client import connect, ClientConnection
+try:
+    from websockets.asyncio.client import connect, ClientConnection
+except ImportError:
+    # The websocket client is optional.
+    pass
 
 
 class WebsocketStream:

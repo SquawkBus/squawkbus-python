@@ -8,4 +8,3 @@ It follows the publish-subscribe pattern, and includes support for "notification
 a subscription by another client. This allows it to provide data on-demand.
 
 See the server documentation for more detailed information.
-
