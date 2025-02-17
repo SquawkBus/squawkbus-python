@@ -22,8 +22,8 @@ def test_multicast_data():
     source = MulticastData(
         'topic',
         [
-            DataPacket(1, 'text/plain', b'first'),
-            DataPacket(0, 'text/plain', b'second'),
+            DataPacket('', 1, 'text/plain', b'first'),
+            DataPacket('', 0, 'text/plain', b'second'),
         ]
     )
     dest = Message.deserialize(source.serialize())
@@ -36,8 +36,8 @@ def test_unicast_data():
         '12345678123456781234567812345678',
         'topic',
         [
-            DataPacket(1, 'text/plain', b'first'),
-            DataPacket(0, 'text/plain', b'second'),
+            DataPacket('', 1, 'text/plain', b'first'),
+            DataPacket('', 0, 'text/plain', b'second'),
         ]
     )
     dest = Message.deserialize(source.serialize())
@@ -80,8 +80,8 @@ def test_subscription_request():
 def test_authentication_request():
     """Test authentication request"""
     source = AuthenticationRequest(
-        'PASSWORD',
-        b64encode(b'aladdin:opensesame').decode('ascii')
+        'basic',
+        b64encode(b'aladdin:opensesame')
     )
     dest = Message.deserialize(source.serialize())
     assert source == dest
@@ -90,7 +90,7 @@ def test_authentication_request():
 def test_authentication_response():
     """Test authentication response"""
     source = AuthenticationResponse(
-        True
+        'xxxx'
     )
     dest = Message.deserialize(source.serialize())
     assert source == dest
@@ -103,8 +103,8 @@ def test_forwarded_multicast_data():
         'host',
         'topic',
         [
-            DataPacket(1, 'text/plain', b'first'),
-            DataPacket(0, 'text/plain', b'second'),
+            DataPacket('', 1, 'text/plain', b'first'),
+            DataPacket('', 0, 'text/plain', b'second'),
         ]
     )
     dest = Message.deserialize(source.serialize())
@@ -119,8 +119,8 @@ def test_forwarded_unicast_data():
         '12345678123456781234567812345678',
         'topic',
         [
-            DataPacket(1, 'text/plain', b'first'),
-            DataPacket(0, 'text/plain', b'second'),
+            DataPacket('', 1, 'text/plain', b'first'),
+            DataPacket('', 0, 'text/plain', b'second'),
         ]
     )
     dest = Message.deserialize(source.serialize())
