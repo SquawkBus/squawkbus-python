@@ -47,8 +47,8 @@ def test_unicast_data():
 def test_forwarded_subscription_request():
     """Test forwarded subscription request"""
     source = ForwardedSubscriptionRequest(
-        'user',
         'host',
+        'user',
         '12345678123456781234567812345678',
         'topic',
         True
@@ -99,8 +99,8 @@ def test_authentication_response():
 def test_forwarded_multicast_data():
     """Test forwarded multicast data message"""
     source = ForwardedMulticastData(
-        'user',
         'host',
+        'user',
         'topic',
         [
             DataPacket('', 1, 'text/plain', b'first'),
@@ -114,8 +114,8 @@ def test_forwarded_multicast_data():
 def test_forwarded_unicast_data():
     """Test forwarded unicast data message"""
     source = ForwardedUnicastData(
-        'user',
         'host',
+        'user',
         '12345678123456781234567812345678',
         'topic',
         [

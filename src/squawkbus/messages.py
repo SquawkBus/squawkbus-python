@@ -109,6 +109,78 @@ class Message(metaclass=ABCMeta):
         """
 
 
+class AuthenticationRequest(Message):
+    """An authentication request message"""
+
+    def __init__(
+            self,
+            method: str,
+            credentials: bytes
+    ) -> None:
+        """A request for authentication.
+
+        Args:
+            method (str): The authentication method.
+            credentials (bytes): The credentials.
+        """
+        super().__init__(MessageType.AUTHENTICATION_REQUEST)
+        self.method = method
+        self.credentials = credentials
+
+    @classmethod
+    def read_body(cls, reader: DataReader) -> Message:
+        method = reader.read_string()
+        credentials = reader.read_byte_array()
+        return AuthenticationRequest(method, credentials)
+
+    def write_body(self, writer: DataWriter) -> None:
+        writer.write_string(self.method)
+        writer.write_byte_array(self.credentials)
+
+    def __str__(self):
+        return f'AuthenticationRequest(method={self.method!r},credentials={self.credentials!r})'
+
+    def __eq__(self, value: Any) -> bool:
+        return (
+            isinstance(value, AuthenticationRequest) and
+            self.method == value.method and
+            self.credentials == value.credentials
+        )
+
+
+class AuthenticationResponse(Message):
+    """An authentication response"""
+
+    def __init__(
+            self,
+            client_id: str,
+    ) -> None:
+        """The response to an authentication request.
+
+        Args:
+            client_id (str): The id for the client, assigned by the broker.
+        """
+        super().__init__(MessageType.AUTHENTICATION_RESPONSE)
+        self.client_id = client_id
+
+    @classmethod
+    def read_body(cls, reader: DataReader) -> Message:
+        client_id = reader.read_string()
+        return AuthenticationResponse(client_id)
+
+    def write_body(self, writer: DataWriter) -> None:
+        writer.write_string(self.client_id)
+
+    def __str__(self):
+        return f'AuthenticationResponse(client_id={self.client_id})'
+
+    def __eq__(self, value: Any) -> bool:
+        return (
+            isinstance(value, AuthenticationResponse) and
+            self.client_id == value.client_id
+        )
+
+
 class MulticastData(Message):
     """A multicast data message"""
 
@@ -198,8 +270,8 @@ class ForwardedSubscriptionRequest(Message):
 
     def __init__(
             self,
-            user: str,
             host: str,
+            user: str,
             client_id: str,
             topic: str,
             is_add: bool
@@ -207,44 +279,44 @@ class ForwardedSubscriptionRequest(Message):
         """A forwarded subscription request.
 
         Args:
-            user (str): The name of the user that requested the subscription.
             host (str): The host from which the request was made.
+            user (str): The name of the user that requested the subscription.
             client_id (str): The identifier for the client that made the request.
             topic (str): The topic name.
             is_add (bool): If true the request was to add a subscription.
         """
         super().__init__(MessageType.FORWARDED_SUBSCRIPTION_REQUEST)
-        self.user = user
         self.host = host
+        self.user = user
         self.client_id = client_id
         self.topic = topic
         self.is_add = is_add
 
     @classmethod
     def read_body(cls, reader: DataReader) -> ForwardedSubscriptionRequest:
-        user = reader.read_string()
         host = reader.read_string()
+        user = reader.read_string()
         client_id = reader.read_string()
         topic = reader.read_string()
         is_add = reader.read_boolean()
-        return ForwardedSubscriptionRequest(user, host, client_id, topic, is_add)
+        return ForwardedSubscriptionRequest(host, user, client_id, topic, is_add)
 
     def write_body(self, writer: DataWriter) -> None:
-        writer.write_string(self.user)
         writer.write_string(self.host)
+        writer.write_string(self.user)
         writer.write_string(self.client_id)
         writer.write_string(self.topic)
         writer.write_boolean(self.is_add)
 
     def __str__(self) -> str:
         # pylint: disable=line-too-long
-        return f'ForwardedSubscriptionRequest(user={self.user!r},host={self.host!r},client_id={self.client_id!r},topic={self.topic!r},is_add={self.is_add})'
+        return f'ForwardedSubscriptionRequest(host={self.host!r},user={self.user!r},client_id={self.client_id!r},topic={self.topic!r},is_add={self.is_add})'
 
     def __eq__(self, value: Any) -> bool:
         return (
             isinstance(value, ForwardedSubscriptionRequest) and
-            self.user == value.user and
             self.host == value.host and
+            self.user == value.user and
             self.client_id == value.client_id and
             self.topic == value.topic and
             self.is_add == value.is_add
@@ -321,125 +393,53 @@ class SubscriptionRequest(Message):
         )
 
 
-class AuthenticationRequest(Message):
-    """An authentication request message"""
-
-    def __init__(
-            self,
-            method: str,
-            credentials: bytes
-    ) -> None:
-        """A request for authentication.
-
-        Args:
-            method (str): The authentication method.
-            credentials (bytes): The credentials.
-        """
-        super().__init__(MessageType.AUTHENTICATION_REQUEST)
-        self.method = method
-        self.credentials = credentials
-
-    @classmethod
-    def read_body(cls, reader: DataReader) -> Message:
-        method = reader.read_string()
-        credentials = reader.read_byte_array()
-        return AuthenticationRequest(method, credentials)
-
-    def write_body(self, writer: DataWriter) -> None:
-        writer.write_string(self.method)
-        writer.write_byte_array(self.credentials)
-
-    def __str__(self):
-        return f'AuthenticationRequest(method={self.method!r},credentials={self.credentials!r})'
-
-    def __eq__(self, value):
-        return (
-            isinstance(value, AuthenticationRequest) and
-            self.method == value.method and
-            self.credentials == value.credentials
-        )
-
-
-class AuthenticationResponse(Message):
-    """An authentication response"""
-
-    def __init__(
-            self,
-            client_id: str,
-    ) -> None:
-        """The response to an authentication request.
-
-        Args:
-            client_id (str): The id for the client, assigned by the broker.
-        """
-        super().__init__(MessageType.AUTHENTICATION_RESPONSE)
-        self.client_id = client_id
-
-    @classmethod
-    def read_body(cls, reader: DataReader) -> Message:
-        client_id = reader.read_string()
-        return AuthenticationResponse(client_id)
-
-    def write_body(self, writer: DataWriter) -> None:
-        writer.write_string(self.client_id)
-
-    def __str__(self):
-        return f'AuthenticationResponse(client_id={self.client_id})'
-
-    def __eq__(self, value: Any) -> bool:
-        return (
-            isinstance(value, AuthenticationResponse) and
-            self.client_id == value.client_id
-        )
-
-
 class ForwardedMulticastData(Message):
     """A forwarded multicast data message"""
 
     def __init__(
             self,
-            user: str,
             host: str,
+            user: str,
             topic: str,
             data_packets: list[DataPacket]
     ) -> None:
         """Forwarded multicast data.
 
         Args:
-            user (str): The user that sent the data.
             host (str): The host from which the data was sent.
+            user (str): The user that sent the data.
             topic (str): The topic name.
             data_packets (list[DataPacket]): The data packets.
         """
         super().__init__(MessageType.FORWARDED_MULTICAST_DATA)
-        self.user = user
         self.host = host
+        self.user = user
         self.topic = topic
         self.data_packets = data_packets
 
     @classmethod
     def read_body(cls, reader: DataReader) -> Message:
-        user = reader.read_string()
         host = reader.read_string()
+        user = reader.read_string()
         topic = reader.read_string()
         data_packets = reader.read_data_packet_array()
-        return ForwardedMulticastData(user, host, topic, data_packets)
+        return ForwardedMulticastData(host, user, topic, data_packets)
 
     def write_body(self, writer: DataWriter) -> None:
-        writer.write_string(self.user)
         writer.write_string(self.host)
+        writer.write_string(self.user)
         writer.write_string(self.topic)
         writer.write_data_packet_array(self.data_packets)
 
     def __str__(self):
         # pylint: disable=line-too-long
-        return f'ForwardedMulticastData(user={self.user!r},host={self.host!r},topic={self.topic!r},data_packets={self.data_packets!r}'
+        return f'ForwardedMulticastData(host={self.host!r},user={self.user!r},topic={self.topic!r},data_packets={self.data_packets!r}'
 
     def __eq__(self, value: Any) -> bool:
         return (
             isinstance(value, ForwardedMulticastData) and
-            self.user == value.user and
             self.host == value.host and
+            self.user == value.user and
             self.topic == value.topic and
             self.data_packets == value.data_packets
         )
@@ -450,8 +450,8 @@ class ForwardedUnicastData(Message):
 
     def __init__(
             self,
-            user: str,
             host: str,
+            user: str,
             client_id: str,
             topic: str,
             data_packets: list[DataPacket]
@@ -459,44 +459,44 @@ class ForwardedUnicastData(Message):
         """A forwarded unicast message
 
         Args:
-            user (str): The user that sent the message.
             host (str): The host from which the message was sent.
+            user (str): The user that sent the message.
             client_id (str): The client that sent the message.
             topic (str): The topic name.
             data_packets (list[DataPacket]): The data packets.
         """
         super().__init__(MessageType.FORWARDED_UNICAST_DATA)
-        self.user = user
         self.host = host
+        self.user = user
         self.client_id = client_id
         self.topic = topic
         self.data_packets = data_packets
 
     @classmethod
     def read_body(cls, reader: DataReader) -> Message:
-        user = reader.read_string()
         host = reader.read_string()
+        user = reader.read_string()
         client_id = reader.read_string()
         topic = reader.read_string()
         data_packets = reader.read_data_packet_array()
-        return ForwardedUnicastData(user, host, client_id, topic, data_packets)
+        return ForwardedUnicastData(host, user, client_id, topic, data_packets)
 
     def write_body(self, writer: DataWriter) -> None:
-        writer.write_string(self.user)
         writer.write_string(self.host)
+        writer.write_string(self.user)
         writer.write_string(self.client_id)
         writer.write_string(self.topic)
         writer.write_data_packet_array(self.data_packets)
 
     def __str__(self):
         # pylint: disable=line-too-long
-        return f'ForwardedUnicastData(user={self.user!r},host={self.host!r},client_id={self.client_id!r},topic={self.topic!r},data_packets={self.data_packets!r})'
+        return f'ForwardedUnicastData(host={self.host!r},user={self.user!r},client_id={self.client_id!r},topic={self.topic!r},data_packets={self.data_packets!r})'
 
     def __eq__(self, value: Any) -> bool:
         return (
             isinstance(value, ForwardedUnicastData) and
-            self.user == value.user and
             self.host == value.host and
+            self.user == value.user and
             self.client_id == value.client_id and
             self.topic == value.topic and
             self.data_packets == value.data_packets

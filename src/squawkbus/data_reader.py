@@ -55,9 +55,8 @@ class DataReader:
         Returns:
             str: The string.
         """
-        count = self.read_int()
-        buf = self._read(count)
-        return bytes(buf).decode(encoding)
+        buf = self.read_byte_array()
+        return buf.decode(encoding)
 
     def read_byte_array(self) -> bytes:
         """Read an array of bytes.

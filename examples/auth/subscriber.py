@@ -2,7 +2,7 @@
 
 import asyncio
 
-from aioconsole import aprint
+from aioconsole import aprint, ainput
 
 from squawkbus import SocketClient, DataPacket
 
@@ -31,12 +31,11 @@ async def main_async(host: str, port: int) -> None:
     password = input('Password: ')
     credentials = (username, password)
 
-    topic = input('Topic: ')
-
     client = await SocketClient.create(host, port, credentials=credentials)
     await aprint(f"Connected as {client.client_id}")
     client.data_handlers.append(on_data)
 
+    topic = await ainput('Topic: ')
     await client.add_subscription(topic)
 
     await client.wait_closed()

@@ -15,16 +15,18 @@ async def get_message() -> tuple[str, list[DataPacket]]:
 
     ok = topic != ''
     while ok:
-        entitlement = await ainput("Entitlement (<ENTER> to stop): ")
-        if entitlement == '':
+        data = await ainput("Data (<ENTER> to stop): ")
+        if data == '':
             ok = False
             continue
+
+        entitlement = await ainput("Entitlement (0): ")
+        if entitlement == '':
+            entitlement = '0'
 
         content_type = await ainput("Content type (text/plain): ")
         if content_type == '':
             content_type = 'text/plain'
-
-        data = await ainput("Data: ")
 
         packet = DataPacket(
             "message",

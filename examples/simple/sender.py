@@ -1,20 +1,20 @@
 """Simple Publisher"""
 
 import asyncio
-import socket
-from ssl import SSLContext
+import logging
 
 from aioconsole import ainput, aprint
 
 from squawkbus import SocketClient, DataPacket
 
 
-async def get_message() -> tuple[str, list[DataPacket]]:
+async def get_message() -> tuple[str, str, list[DataPacket]]:
     data_packets: list[DataPacket] = []
 
+    client_id = await ainput("Client ID: ")
     topic = await ainput('Topic: ')
 
-    ok = topic != ''
+    ok = topic != '' and client_id != ''
     while ok:
         data = await ainput("Data (<ENTER> to stop): ")
         if data == '':
@@ -37,31 +37,29 @@ async def get_message() -> tuple[str, list[DataPacket]]:
         )
         data_packets.append(packet)
 
-    return topic, data_packets
+    return client_id, topic, data_packets
 
 
-async def main(host: str, port: int, ssl: bool | str | SSLContext | None) -> None:
+async def main_async(host: str, port: int):
 
-    client = await SocketClient.create(host, port, ssl=ssl)
+    client = await SocketClient.create(host, port)
     await aprint(f"Connected as {client.client_id}")
 
     while True:
         await aprint("Enter a new message")
-        topic, data_packets = await get_message()
+        client_id, topic, data_packets = await get_message()
         if not topic:
             break
 
-        await client.publish(topic, data_packets)
+        await client.send(client_id, topic, data_packets)
 
     client.close()
     await client.wait_closed()
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.WARNING)
     try:
-        HOST = socket.getfqdn()
-        PORT = 8558
-        SSL = True
-        asyncio.run(main(HOST, PORT, SSL))
+        asyncio.run(main_async('localhost', 8558))
     except KeyboardInterrupt:
         pass
