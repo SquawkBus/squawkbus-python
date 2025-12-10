@@ -40,6 +40,15 @@ class DataWriter:
         self.buf += struct.pack('>i', val)
         return self
 
+    def write_unsigned_int(self, val: int) -> DataWriter:
+        """Write an unsigned int
+
+        Args:
+            val ([type]): The unsigned int value.
+        """
+        self.buf += struct.pack('>I', val)
+        return self
+
     def write_string(self, val: str, encoding: str = 'utf-8') -> DataWriter:
         """Writ a string.
 
@@ -61,13 +70,24 @@ class DataWriter:
             self.buf += val
         return self
 
+    def write_int_set(self, val: set[int]) -> DataWriter:
+        """Write a set of ints.
+
+        Args:
+            val (set[int]): The set of ints.
+        """
+        self.write_int(len(val))
+        for item in val:
+            self.write_int(item)
+        return self
+
     def write_data_packet(self, val: DataPacket) -> DataWriter:
         """Write a data packet.
 
         Args:
             val (DataPacket): The data packets.
         """
-        self.write_int(val.entitlement)
+        self.write_int_set(val.entitlements)
         self.write_string(val.content_type)
         self.write_byte_array(val.data)
         return self

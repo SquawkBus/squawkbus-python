@@ -46,6 +46,15 @@ class DataReader:
         buf = self._read(4)
         return struct.unpack('>i', buf)[0]
 
+    def read_unsigned_int(self) -> int:
+        """Read an unsigned int.
+
+        Returns:
+            int: The unsigned int.
+        """
+        buf = self._read(4)
+        return struct.unpack('>I', buf)[0]
+
     def read_string(self, encoding: str = 'utf-8') -> str:
         """Read a string.
 
@@ -68,16 +77,28 @@ class DataReader:
         buf = bytes(self._read(count))
         return buf
 
+    def read_int_set(self) -> set[int]:
+        """Read a set of ints
+
+        Returns:
+            set[int]: The set of ints.
+        """
+        count = self.read_int()
+        return {
+            self.read_int()
+            for _ in range(count)
+        }
+
     def read_data_packet(self) -> DataPacket:
         """Read a data packet
 
         Returns:
             DataPacket: The data packet.
         """
-        entitlement = self.read_int()
+        entitlements = self.read_int_set()
         content_type = self.read_string()
         data = self.read_byte_array()
-        return DataPacket(entitlement, content_type, data)
+        return DataPacket(entitlements, content_type, data)
 
     def read_data_packet_array(self) -> list[DataPacket]:
         """Read an array of data packets.

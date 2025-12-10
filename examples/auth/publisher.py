@@ -19,16 +19,17 @@ async def get_message() -> tuple[str, list[DataPacket]]:
             ok = False
             continue
 
-        entitlement = await ainput("Entitlement (0): ")
-        if entitlement == '':
-            entitlement = '0'
+        text = await ainput("Entitlements (0): ")
+        if text == '':
+            text = "0"
+        entitlements = {int(i.strip()) for i in text.split(',')}
 
         content_type = await ainput("Content type (text/plain): ")
         if content_type == '':
             content_type = 'text/plain'
 
         packet = DataPacket(
-            int(entitlement),
+            entitlements,
             content_type,
             data.encode('utf-8')
         )
