@@ -89,6 +89,20 @@ class DataReader:
             for _ in range(count)
         }
 
+    def read_headers(self) -> dict[bytes, bytes]:
+        """Read the headers.
+
+        Returns:
+            dict[str, str]: The headers.
+        """
+        count = self.read_int()
+        headers = dict[bytes, bytes]()
+        for _ in range(count):
+            key = self.read_byte_array()
+            value = self.read_byte_array()
+            headers[key] = value
+        return headers
+
     def read_data_packet(self) -> DataPacket:
         """Read a data packet
 
@@ -96,9 +110,9 @@ class DataReader:
             DataPacket: The data packet.
         """
         entitlements = self.read_int_set()
-        content_type = self.read_string()
+        headers = self.read_headers()
         data = self.read_byte_array()
-        return DataPacket(entitlements, content_type, data)
+        return DataPacket(entitlements, headers, data)
 
     def read_data_packet_array(self) -> list[DataPacket]:
         """Read an array of data packets.
