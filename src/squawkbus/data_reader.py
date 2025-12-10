@@ -73,7 +73,7 @@ class DataReader:
         Returns:
             Optional[bytes]: The bytes or None.
         """
-        count = self.read_int()
+        count = self.read_unsigned_int()
         buf = bytes(self._read(count))
         return buf
 
@@ -83,7 +83,7 @@ class DataReader:
         Returns:
             set[int]: The set of ints.
         """
-        count = self.read_int()
+        count = self.read_unsigned_int()
         return {
             self.read_int()
             for _ in range(count)
@@ -95,7 +95,7 @@ class DataReader:
         Returns:
             dict[str, str]: The headers.
         """
-        count = self.read_int()
+        count = self.read_unsigned_int()
         headers = dict[bytes, bytes]()
         for _ in range(count):
             key = self.read_byte_array()
@@ -120,7 +120,7 @@ class DataReader:
         Returns:
             Optional[List[DataPacket]]: The data packets or None.
         """
-        count = self.read_int()
+        count = self.read_unsigned_int()
         packets: list[DataPacket] = list()
         for _ in range(count):
             packet = self.read_data_packet()
