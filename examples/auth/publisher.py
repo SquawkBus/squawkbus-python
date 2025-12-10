@@ -24,13 +24,18 @@ async def get_message() -> tuple[str, list[DataPacket]]:
             text = "0"
         entitlements = {int(i.strip()) for i in text.split(',')}
 
-        content_type = await ainput("Content type (text/plain): ")
-        if content_type == '':
-            content_type = 'text/plain'
+        text = await ainput("Headers (content-type:text/plain): ")
+        if text == '':
+            text = 'content-type:text/plain'
+        headers = {
+            key.strip().encode(): value.strip().encode()
+            for item in text.split(',')
+            for key, value in [item.strip().split(':', 1)]
+        }
 
         packet = DataPacket(
             entitlements,
-            content_type,
+            headers,
             data.encode('utf-8')
         )
         data_packets.append(packet)

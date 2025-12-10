@@ -7,30 +7,30 @@ class DataPacket:
     def __init__(
             self,
             entitlements: set[int],
-            content_type: str,
+            headers: dict[bytes, bytes],
             data: bytes
     ) -> None:
         """Initialise a data packet.
 
         Args:
             entitlements (set[int]): The required packet entitlements.
-            content_type (str): The content type of the data.
+            headers (dict[bytes, bytes]): The headers.
             data (bytes): The data.
         """
         self.entitlements = entitlements
-        self.content_type = content_type
+        self.headers = headers
         self.data = data
 
     def __str__(self) -> str:
-        return f'{self.entitlements=},{self.content_type=},{self.data=}'
+        return f'{self.entitlements=},{self.headers=},{self.data=}'
 
     def __repr__(self):
-        return f'DataPacket({self.entitlements!r},{self.content_type!r},{self.data!r})'
+        return f'DataPacket({self.entitlements!r},{self.headers!r},{self.data!r})'
 
     def __eq__(self, value):
         return (
             isinstance(value, DataPacket) and
             self.entitlements == value.entitlements and
-            self.content_type == value.content_type and
+            self.headers == value.headers and
             self.data == value.data
         )

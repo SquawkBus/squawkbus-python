@@ -81,6 +81,18 @@ class DataWriter:
             self.write_int(item)
         return self
 
+    def write_headers(self, val: dict[bytes, bytes]) -> DataWriter:
+        """Write headers.
+
+        Args:
+            val (dict[str, str]): The headers.
+        """
+        self.write_int(len(val))
+        for key, value in val.items():
+            self.write_byte_array(key)
+            self.write_byte_array(value)
+        return self
+
     def write_data_packet(self, val: DataPacket) -> DataWriter:
         """Write a data packet.
 
@@ -88,7 +100,7 @@ class DataWriter:
             val (DataPacket): The data packets.
         """
         self.write_int_set(val.entitlements)
-        self.write_string(val.content_type)
+        self.write_headers(val.headers)
         self.write_byte_array(val.data)
         return self
 
