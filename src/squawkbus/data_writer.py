@@ -65,7 +65,7 @@ class DataWriter:
         Args:
             val (Optional[bytes]): The bytes to write.
         """
-        self.write_int(len(val))
+        self.write_unsigned_int(len(val))
         if len(val) > 0:
             self.buf += val
         return self
@@ -76,7 +76,7 @@ class DataWriter:
         Args:
             val (set[int]): The set of ints.
         """
-        self.write_int(len(val))
+        self.write_unsigned_int(len(val))
         for item in val:
             self.write_int(item)
         return self
@@ -87,7 +87,7 @@ class DataWriter:
         Args:
             val (dict[str, str]): The headers.
         """
-        self.write_int(len(val))
+        self.write_unsigned_int(len(val))
         for key, value in val.items():
             self.write_byte_array(key)
             self.write_byte_array(value)
@@ -110,7 +110,7 @@ class DataWriter:
         Args:
             val (list[DataPacket]): The data packets or None.
         """
-        self.write_int(len(val))
+        self.write_unsigned_int(len(val))
         for packet in val:
             self.write_data_packet(packet)
         return self
