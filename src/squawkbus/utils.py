@@ -11,14 +11,10 @@ from asyncio import (
 )
 from pathlib import Path
 from ssl import SSLContext, Purpose, create_default_context
-from typing import AsyncIterator, Coroutine, Set, Callable, TypeVar
+from typing import AsyncIterator, Callable, Coroutine, Set
 
 
-# pylint: disable=invalid-name
-T = TypeVar('T')
-
-
-async def read_aiter(
+async def read_aiter[T](
         read: Callable[[], Coroutine[None, None, None]],
         write: Callable[[], Coroutine[None, None, None]],
         dequeue: Callable[[], Coroutine[None, None, T]],
