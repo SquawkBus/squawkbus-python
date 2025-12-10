@@ -30,7 +30,6 @@ async def get_message() -> tuple[str, list[DataPacket]]:
             content_type = 'text/plain'
 
         packet = DataPacket(
-            "message",
             int(entitlement),
             content_type,
             data.encode('utf-8')

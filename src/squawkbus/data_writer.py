@@ -67,7 +67,6 @@ class DataWriter:
         Args:
             val (DataPacket): The data packets.
         """
-        self.write_string(val.name)
         self.write_int(val.entitlement)
         self.write_string(val.content_type)
         self.write_byte_array(val.data)
