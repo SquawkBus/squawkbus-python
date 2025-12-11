@@ -9,7 +9,7 @@ import asyncio
 from squawkbus import CallbackClient
 
 async def on_data(user, host, feed, topic, data_packets, is_image):
-    print(f'data: user="{user}",host="{host}",feed="{feed}",topic="{topic}",is_image={is_image}')
+    print(f'data: {user=},{host=},{feed=},{topic=},{is_image=}')
     if not data_packets:
         print("no data")
     else:

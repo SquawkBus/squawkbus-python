@@ -50,7 +50,7 @@ async def on_notification(
         host: str,
         feed: str,
         topic: str,
-        is_add: bool
+        count: int
 ) -> None:
     """Called for a notification"""
     pass
