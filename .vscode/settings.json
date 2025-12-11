@@ -31,7 +31,8 @@
         "cacerts",
         "cafile",
         "setuptools",
-        "squawkbus"
+        "squawkbus",
+        "XNAS"
     ],
     "python.testing.pytestArgs": [
         "tests"

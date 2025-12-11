@@ -274,7 +274,7 @@ class ForwardedSubscriptionRequest(Message):
             user: str,
             client_id: str,
             topic: str,
-            is_add: bool
+            count: int
     ) -> None:
         """A forwarded subscription request.
 
@@ -283,14 +283,14 @@ class ForwardedSubscriptionRequest(Message):
             user (str): The name of the user that requested the subscription.
             client_id (str): The identifier for the client that made the request.
             topic (str): The topic name.
-            is_add (bool): If true the request was to add a subscription.
+            count (int): The number of subscriptions.
         """
         super().__init__(MessageType.FORWARDED_SUBSCRIPTION_REQUEST)
         self.host = host
         self.user = user
         self.client_id = client_id
         self.topic = topic
-        self.is_add = is_add
+        self.count = count
 
     @classmethod
     def read_body(cls, reader: DataReader) -> ForwardedSubscriptionRequest:
@@ -298,19 +298,19 @@ class ForwardedSubscriptionRequest(Message):
         user = reader.read_string()
         client_id = reader.read_string()
         topic = reader.read_string()
-        is_add = reader.read_boolean()
-        return ForwardedSubscriptionRequest(host, user, client_id, topic, is_add)
+        count = reader.read_unsigned_int()
+        return ForwardedSubscriptionRequest(host, user, client_id, topic, count)
 
     def write_body(self, writer: DataWriter) -> None:
         writer.write_string(self.host)
         writer.write_string(self.user)
         writer.write_string(self.client_id)
         writer.write_string(self.topic)
-        writer.write_boolean(self.is_add)
+        writer.write_unsigned_int(self.count)
 
     def __str__(self) -> str:
         # pylint: disable=line-too-long
-        return f'ForwardedSubscriptionRequest(host={self.host!r},user={self.user!r},client_id={self.client_id!r},topic={self.topic!r},is_add={self.is_add})'
+        return f'ForwardedSubscriptionRequest({self.host=},{self.user=},{self.client_id=},{self.topic=},{self.count=})'
 
     def __eq__(self, value: Any) -> bool:
         return (
@@ -319,7 +319,7 @@ class ForwardedSubscriptionRequest(Message):
             self.user == value.user and
             self.client_id == value.client_id and
             self.topic == value.topic and
-            self.is_add == value.is_add
+            self.count == value.count
         )
 
 
