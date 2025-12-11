@@ -16,7 +16,7 @@ DataHandler = Callable[
     Awaitable[None]
 ]
 NotificationHandler = Callable[
-    [str, str, str, str, bool],
+    [str, str, str, str, int],
     Awaitable[None]
 ]
 ClosedHandler = Callable[
@@ -89,7 +89,7 @@ class CallbackClient(BaseClient):
             user: str,
             host: str,
             topic: str,
-            is_add: bool
+            count: int
     ) -> None:
         for handler in self._notification_handlers:
             await handler(
@@ -97,7 +97,7 @@ class CallbackClient(BaseClient):
                 user,
                 host,
                 topic,
-                is_add
+                count
             )
 
     async def on_closed(self, is_faulted: bool) -> None:

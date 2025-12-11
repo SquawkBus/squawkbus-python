@@ -26,6 +26,13 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "Simple selectfeed",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/simple/selectfeed.py",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Auth subscriber",
             "type": "debugpy",
             "request": "launch",

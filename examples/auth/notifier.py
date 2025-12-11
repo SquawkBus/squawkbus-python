@@ -12,11 +12,11 @@ async def on_notification(
         user: str,
         host: str,
         topic: str,
-        is_add: bool
+        count: int
 ) -> None:
     """Handle a notification"""
     print(
-        f"on_notification: client_id={client_id!r},user={user!r},host={host!r},topic={topic!r},is_add={is_add}"
+        f"on_notification: {client_id=},{user=},{host=},{topic=},{count=}"
     )
 
 

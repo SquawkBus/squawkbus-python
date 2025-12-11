@@ -179,7 +179,7 @@ class BaseClient(metaclass=ABCMeta):
             message.user,
             message.host,
             message.topic,
-            message.is_add
+            message.count
         )
 
     @abstractmethod
@@ -189,7 +189,7 @@ class BaseClient(metaclass=ABCMeta):
             user: str,
             host: str,
             topic: str,
-            is_add: bool
+            count: int
     ) -> None:
         """Called for a notification.
 
@@ -198,7 +198,7 @@ class BaseClient(metaclass=ABCMeta):
             user (str): The name of the user that requested the subscription.
             host (str): The host from which the subscription was requested.
             feed (str): The feed name.
-            is_add (bool): If true the request was to add a subscription.
+            count (int): The number of subscriptions.
         """
 
     @abstractmethod
