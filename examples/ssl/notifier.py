@@ -16,9 +16,7 @@ async def on_notification(
         topic: str,
         count: int
 ) -> None:
-    await aprint(
-        f"{client_id=},{user=},{host=},{topic=},{count=}"
-    )
+    await aprint(f"{client_id=},{user=},{host=},{topic=},{count=}")
 
 
 async def main(host: str, port: int, ssl: bool | str | SSLContext | None) -> None:

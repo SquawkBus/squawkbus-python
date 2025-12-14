@@ -1,4 +1,4 @@
-"""Simple subscriber"""
+"""Simple subscriber using Web Sockets"""
 
 import asyncio
 import logging
@@ -14,7 +14,7 @@ async def on_data(
         topic: str,
         data: list[DataPacket]
 ) -> None:
-    print(f'sender="{sender}",host="{host}",topic="{topic}",data={data}')
+    await aprint(f'{sender=},{host=},{topic=},{data=}')
 
 
 async def main_async(host: str, port: int):

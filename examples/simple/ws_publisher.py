@@ -1,7 +1,9 @@
-"""Simple Publisher"""
+"""Simple Publisher using Web Sockets"""
 
 import asyncio
+import json
 import logging
+from typing import cast
 
 from aioconsole import ainput, aprint
 
@@ -20,18 +22,17 @@ async def get_message() -> tuple[str, list[DataPacket]]:
             ok = False
             continue
 
-        text = await ainput("Entitlements (0): ")
+        text = await ainput("Entitlements [0]: ")
         if text == '':
             text = "0"
         entitlements = {int(i.strip()) for i in text.split(',')}
 
-        text = await ainput("Headers (content-type:text/plain): ")
+        text = await ainput('Headers [{"content-type":"text/plain"}]: ')
         if text == '':
-            text = 'content-type:text/plain'
+            text = '{"content-type":"text/plain"}'
         headers = {
-            key.strip().encode(): value.strip().encode()
-            for item in text.split(',')
-            for key, value in [item.strip().split(':', 1)]
+            key.encode(): value.encode()
+            for key, value in cast(dict[str, str], json.loads(text)).items()
         }
 
         packet = DataPacket(

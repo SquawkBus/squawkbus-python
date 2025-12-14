@@ -15,7 +15,7 @@ async def on_data(
         topic: str,
         data: list[DataPacket]
 ) -> None:
-    await aprint(f'sender="{sender}",host="{host}",topic="{topic}",data={data}')
+    await aprint(f'{sender=},{host=},{topic=},{data=}')
 
 
 async def main(host: str, port: int, ssl: bool | str | SSLContext | None) -> None:

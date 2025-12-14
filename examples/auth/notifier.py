@@ -14,10 +14,7 @@ async def on_notification(
         topic: str,
         count: int
 ) -> None:
-    """Handle a notification"""
-    print(
-        f"on_notification: {client_id=},{user=},{host=},{topic=},{count=}"
-    )
+    await aprint(f"{client_id=},{user=},{host=},{topic=},{count=}")
 
 
 async def main_async(host: str, port: int) -> None:
