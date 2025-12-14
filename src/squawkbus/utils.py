@@ -11,7 +11,7 @@ from asyncio import (
 )
 from pathlib import Path
 from ssl import SSLContext, Purpose, create_default_context
-from typing import AsyncIterator, Callable, Coroutine, Set
+from typing import AsyncIterator, Callable, Coroutine
 
 
 async def read_aiter[T](
@@ -27,7 +27,7 @@ async def read_aiter[T](
     write_task: Task[None] = create_task(write(), name='write')
     dequeue_task: Task[T] = create_task(dequeue(), name='dequeue')
 
-    pending: Set[Future] = set()
+    pending: set[Future] = set()
     pending.add(cancellation_task)
     pending.add(read_task)
     pending.add(write_task)
