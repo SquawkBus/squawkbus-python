@@ -4,8 +4,8 @@ site_dir: docs
 
 docs_dir: documentation
 
-repo_name: SquawkBus/SquawkBus-python
-repo_url: https://github.com/SquawkBus/SquawkBus-python
+repo_name: SquawkBus/squawkBus-python
+repo_url: https://github.com/SquawkBus/squawkBus-python
 edit_uri: ""
 
 theme:
