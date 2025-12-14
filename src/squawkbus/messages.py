@@ -137,8 +137,11 @@ class AuthenticationRequest(Message):
         writer.write_string(self.method)
         writer.write_byte_array(self.credentials)
 
-    def __str__(self):
-        return f'AuthenticationRequest(method={self.method!r},credentials={self.credentials!r})'
+    def __repr__(self):
+        return f'AuthenticationRequest({self.method!r},{self.credentials!r})'
+
+    def __str__(self) -> str:
+        return f'{self.method=},{self.credentials=}'
 
     def __eq__(self, value: Any) -> bool:
         return (
@@ -171,8 +174,11 @@ class AuthenticationResponse(Message):
     def write_body(self, writer: DataWriter) -> None:
         writer.write_string(self.client_id)
 
-    def __str__(self):
-        return f'AuthenticationResponse(client_id={self.client_id})'
+    def __repr__(self):
+        return f'AuthenticationResponse({self.client_id!r})'
+
+    def __str__(self) -> str:
+        return f'{self.client_id=}'
 
     def __eq__(self, value: Any) -> bool:
         return (
@@ -209,8 +215,11 @@ class MulticastData(Message):
         writer.write_string(self.topic)
         writer.write_data_packet_array(self.data_packets)
 
+    def __repr__(self) -> str:
+        return f'MulticastData({self.topic!r},{self.data_packets!r})'
+
     def __str__(self) -> str:
-        return f'MulticastData(topic={self.topic!r},data_packets={self.data_packets!r})'
+        return f'{self.topic=},{self.data_packets=}'
 
     def __eq__(self, value: Any) -> bool:
         return (
@@ -253,8 +262,11 @@ class UnicastData(Message):
         writer.write_string(self.topic)
         writer.write_data_packet_array(self.data_packets)
 
+    def __repr__(self) -> str:
+        return f'UnicastData({self.client_id!r},{self.topic!r},{self.data_packets!r})'
+
     def __str__(self) -> str:
-        return f'UnicastData(client_id={self.client_id!r},topic={self.topic!r},data_packets={self.data_packets!r})'
+        return f'{self.client_id=},{self.topic=},{self.data_packets=}'
 
     def __eq__(self, value: Any) -> bool:
         return (
@@ -308,9 +320,13 @@ class ForwardedSubscriptionRequest(Message):
         writer.write_string(self.topic)
         writer.write_unsigned_int(self.count)
 
+    def __repr__(self) -> str:
+        # pylint: disable=line-too-long
+        return f'ForwardedSubscriptionRequest({self.host!r},{self.user!r},{self.client_id!r},{self.topic!r},{self.count!r})'
+
     def __str__(self) -> str:
         # pylint: disable=line-too-long
-        return f'ForwardedSubscriptionRequest({self.host=},{self.user=},{self.client_id=},{self.topic=},{self.count=})'
+        return f'{self.host=},{self.user=},{self.client_id=},{self.topic=},{self.count=}'
 
     def __eq__(self, value: Any) -> bool:
         return (
@@ -347,8 +363,11 @@ class NotificationRequest(Message):
         writer.write_string(self.topic_pattern)
         writer.write_boolean(self.is_add)
 
+    def __repr__(self) -> str:
+        return f'NotificationRequest({self.topic_pattern!r},{self.is_add!r})'
+
     def __str__(self) -> str:
-        return f'NotificationRequest(topic_pattern={self.topic_pattern!r},is_add={self.is_add})'
+        return f'{self.topic_pattern=},{self.is_add=}'
 
     def __eq__(self, value):
         return (
@@ -382,8 +401,11 @@ class SubscriptionRequest(Message):
         writer.write_string(self.topic)
         writer.write_boolean(self.is_add)
 
+    def __repr__(self) -> str:
+        return f'SubscriptionRequest({self.topic!r},{self.is_add!r})'
+
     def __str__(self) -> str:
-        return f'SubscriptionRequest(topic={self.topic!r},is_add={self.is_add})'
+        return f'{self.topic=},{self.is_add=}'
 
     def __eq__(self, value: Any) -> bool:
         return (
@@ -431,9 +453,13 @@ class ForwardedMulticastData(Message):
         writer.write_string(self.topic)
         writer.write_data_packet_array(self.data_packets)
 
-    def __str__(self):
+    def __repr__(self):
         # pylint: disable=line-too-long
-        return f'ForwardedMulticastData(host={self.host!r},user={self.user!r},topic={self.topic!r},data_packets={self.data_packets!r}'
+        return f'ForwardedMulticastData({self.host!r},{self.user!r},{self.topic!r},{self.data_packets!r})'
+
+    def __str__(self) -> str:
+        # pylint: disable=line-too-long
+        return f'{self.host=},{self.user=},{self.topic=},{self.data_packets=}'
 
     def __eq__(self, value: Any) -> bool:
         return (
@@ -488,9 +514,13 @@ class ForwardedUnicastData(Message):
         writer.write_string(self.topic)
         writer.write_data_packet_array(self.data_packets)
 
-    def __str__(self):
+    def __repr__(self) -> str:
         # pylint: disable=line-too-long
-        return f'ForwardedUnicastData(host={self.host!r},user={self.user!r},client_id={self.client_id!r},topic={self.topic!r},data_packets={self.data_packets!r})'
+        return f'ForwardedUnicastData({self.host!r},{self.user!r},{self.client_id!r},{self.topic!r},{self.data_packets!r})'
+
+    def __str__(self) -> str:
+        # pylint: disable=line-too-long
+        return f'{self.host=},{self.user=},{self.client_id=},{self.topic=},{self.data_packets=}'
 
     def __eq__(self, value: Any) -> bool:
         return (
