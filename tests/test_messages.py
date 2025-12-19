@@ -22,8 +22,8 @@ def test_multicast_data():
     source = MulticastData(
         'topic',
         [
-            DataPacket('', 1, 'text/plain', b'first'),
-            DataPacket('', 0, 'text/plain', b'second'),
+            DataPacket({1}, {b'content-type': b'text/plain'}, b'first'),
+            DataPacket({0}, {b'content-type': b'text/plain'}, b'second'),
         ]
     )
     dest = Message.deserialize(source.serialize())
@@ -36,22 +36,22 @@ def test_unicast_data():
         '12345678123456781234567812345678',
         'topic',
         [
-            DataPacket('', 1, 'text/plain', b'first'),
-            DataPacket('', 0, 'text/plain', b'second'),
+            DataPacket({1}, {b'content-type': b'text/plain'}, b'first'),
+            DataPacket({0}, {b'content-type': b'text/plain'}, b'second'),
         ]
     )
     dest = Message.deserialize(source.serialize())
     assert source == dest
 
 
-def test_forwarded_subscription_request():
+def test_forwarded_subscription_request() -> None:
     """Test forwarded subscription request"""
     source = ForwardedSubscriptionRequest(
         'host',
         'user',
         '12345678123456781234567812345678',
         'topic',
-        True
+        1
     )
     dest = Message.deserialize(source.serialize())
     assert source == dest
@@ -60,7 +60,7 @@ def test_forwarded_subscription_request():
 def test_notification_request():
     """Test notification request"""
     source = NotificationRequest(
-        '.*\\.LSE',
+        '*.LSE',
         True
     )
     dest = Message.deserialize(source.serialize())
@@ -103,8 +103,8 @@ def test_forwarded_multicast_data():
         'user',
         'topic',
         [
-            DataPacket('', 1, 'text/plain', b'first'),
-            DataPacket('', 0, 'text/plain', b'second'),
+            DataPacket({1}, {b'content-type': b'text/plain'}, b'first'),
+            DataPacket({0}, {b'content-type': b'text/plain'}, b'second'),
         ]
     )
     dest = Message.deserialize(source.serialize())
@@ -116,11 +116,11 @@ def test_forwarded_unicast_data():
     source = ForwardedUnicastData(
         'host',
         'user',
-        '12345678123456781234567812345678',
+        'client-id',
         'topic',
         [
-            DataPacket('', 1, 'text/plain', b'first'),
-            DataPacket('', 0, 'text/plain', b'second'),
+            DataPacket({1}, {b'content-type': b'text/plain'}, b'first'),
+            DataPacket({0}, {b'content-type': b'text/plain'}, b'second'),
         ]
     )
     dest = Message.deserialize(source.serialize())
