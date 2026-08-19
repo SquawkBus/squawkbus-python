@@ -23,6 +23,10 @@ ClosedHandler = Callable[
     [bool],
     Awaitable[None]
 ]
+HeartbeatHandler = Callable[
+    [int],
+    Awaitable[None]
+]
 
 
 class CallbackClient(BaseClient):
@@ -37,6 +41,7 @@ class CallbackClient(BaseClient):
         super().__init__(stream, credentials=credentials)
         self._data_handlers: list[DataHandler] = []
         self._notification_handlers: list[NotificationHandler] = []
+        self._heartbeat_handlers: list[HeartbeatHandler] = []
         self._closed_handlers: list[ClosedHandler] = []
         self._read_queue: Queue[Message] = Queue()
         self._write_queue: Queue[Message] = Queue()
@@ -58,6 +63,15 @@ class CallbackClient(BaseClient):
             list[NotificationHandler]: The list of handlers
         """
         return self._notification_handlers
+
+    @property
+    def heartbeat_handlers(self) -> list[HeartbeatHandler]:
+        """The list of handlers called when a heartbeat is received
+
+        Returns:
+            list[HeartbeatHandler]: The list of handlers
+        """
+        return self._heartbeat_handlers
 
     @property
     def closed_handlers(self) -> list[ClosedHandler]:
@@ -97,6 +111,15 @@ class CallbackClient(BaseClient):
                 user,
                 host,
                 topic,
+                count
+            )
+
+    async def on_heartbeat(
+            self,
+            count: int
+    ) -> None:
+        for handler in self._heartbeat_handlers:
+            await handler(
                 count
             )
 

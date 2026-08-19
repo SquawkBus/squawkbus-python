@@ -9,7 +9,11 @@ async def on_data(
         topic: str,
         data: list[DataPacket]
 ) -> None:
-    print(f'{sender=},{host=},{topic=},{data=}')
+    print(f'Data: {sender=},{host=},{topic=},{data=}')
+
+
+async def on_heartbeat(count: int) -> None:
+    print(f'Heartbeat: {count=}')
 
 
 async def main_async(host: str, port: int):
@@ -17,6 +21,7 @@ async def main_async(host: str, port: int):
     client = await SocketClient.create(host, port)
     print(f"Connected as {client.client_id}")
     client.data_handlers.append(on_data)
+    client.heartbeat_handlers.append(on_heartbeat)
 
     await client.add_subscription("PUB.EXAMPLE")
 

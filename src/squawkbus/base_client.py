@@ -20,7 +20,8 @@ from .messages import (
     AuthenticationRequest,
     AuthenticationResponse,
     ForwardedMulticastData,
-    ForwardedUnicastData
+    ForwardedUnicastData,
+    Heartbeat
 )
 from .types import MessageStream
 from .utils import read_aiter
@@ -100,6 +101,10 @@ class BaseClient(metaclass=ABCMeta):
             elif message.message_type == MessageType.FORWARDED_SUBSCRIPTION_REQUEST:
                 await self._raise_forwarded_subscription_request(
                     cast(ForwardedSubscriptionRequest, message)
+                )
+            elif message.message_type == MessageType.HEARTBEAT:
+                await self._raise_heartbeat(
+                    cast(Heartbeat, message)
                 )
             else:
                 raise RuntimeError(
@@ -182,6 +187,14 @@ class BaseClient(metaclass=ABCMeta):
             message.count
         )
 
+    async def _raise_heartbeat(
+            self,
+            message: Heartbeat
+    ) -> None:
+        await self.on_heartbeat(
+            message.count
+        )
+
     @abstractmethod
     async def on_forwarded_subscription_request(
             self,
@@ -199,6 +212,17 @@ class BaseClient(metaclass=ABCMeta):
             host (str): The host from which the subscription was requested.
             feed (str): The feed name.
             count (int): The number of subscriptions.
+        """
+
+    @abstractmethod
+    async def on_heartbeat(
+            self,
+            count: int
+    ) -> None:
+        """Called for a heartbeat.
+
+        Args:
+            count (int): The heartbeat count.
         """
 
     @abstractmethod

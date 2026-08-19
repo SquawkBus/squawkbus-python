@@ -35,7 +35,7 @@ class DataWriter:
         """Write an int
 
         Args:
-            val ([type]): The int value.
+            val (int): The int value.
         """
         self.buf += struct.pack('>i', val)
         return self
@@ -44,9 +44,18 @@ class DataWriter:
         """Write an unsigned int
 
         Args:
-            val ([type]): The unsigned int value.
+            val (int): The unsigned int value.
         """
         self.buf += struct.pack('>I', val)
+        return self
+
+    def write_unsigned_long(self, val: int) -> DataWriter:
+        """Write an unsigned long
+
+        Args:
+            val (int): The unsigned long value.
+        """
+        self.buf += struct.pack('>Q', val)
         return self
 
     def write_string(self, val: str, encoding: str = 'utf-8') -> DataWriter:

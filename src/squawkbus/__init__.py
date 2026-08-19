@@ -1,6 +1,11 @@
 """SquawkBus client"""
 
-from .callback_client import DataHandler, NotificationHandler
+from .callback_client import (
+    ClosedHandler,
+    DataHandler,
+    HeartbeatHandler,
+    NotificationHandler,
+)
 from .data_packet import DataPacket
 from .messages import (
     AuthenticationRequest,
@@ -8,6 +13,7 @@ from .messages import (
     ForwardedMulticastData,
     ForwardedSubscriptionRequest,
     ForwardedUnicastData,
+    Heartbeat,
     Message,
     MessageType,
     MulticastData,
@@ -19,7 +25,9 @@ from .socket_client import SocketClient
 from .websocket_client import WebsocketClient
 
 __all__ = [
+    'ClosedHandler',
     'DataHandler',
+    'HeartbeatHandler',
     'NotificationHandler',
 
     'DataPacket',
@@ -29,6 +37,7 @@ __all__ = [
     'ForwardedMulticastData',
     'ForwardedSubscriptionRequest',
     'ForwardedUnicastData',
+    'Heartbeat',
     'Message',
     'MessageType',
     'MulticastData',

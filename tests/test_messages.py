@@ -13,7 +13,8 @@ from squawkbus.messages import (
     AuthenticationRequest,
     AuthenticationResponse,
     ForwardedMulticastData,
-    ForwardedUnicastData
+    ForwardedUnicastData,
+    Heartbeat,
 )
 
 
@@ -123,5 +124,12 @@ def test_forwarded_unicast_data():
             DataPacket({0}, {b'content-type': b'text/plain'}, b'second'),
         ]
     )
+    dest = Message.deserialize(source.serialize())
+    assert source == dest
+
+
+def test_heartbeat():
+    """Test heartbeat message"""
+    source = Heartbeat(42)
     dest = Message.deserialize(source.serialize())
     assert source == dest
