@@ -55,6 +55,15 @@ class DataReader:
         buf = self._read(4)
         return struct.unpack('>I', buf)[0]
 
+    def read_unsigned_long(self) -> int:
+        """Read an unsigned long.
+
+        Returns:
+            int: The unsigned long.
+        """
+        buf = self._read(8)
+        return struct.unpack('>Q', buf)[0]
+
     def read_string(self, encoding: str = 'utf-8') -> str:
         """Read a string.
 

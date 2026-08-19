@@ -22,6 +22,7 @@ class MessageType(Enum):
     SUBSCRIPTION_REQUEST = 7
     FORWARDED_MULTICAST_DATA = 8
     FORWARDED_UNICAST_DATA = 9
+    HEARTBEAT = 10
 
 
 class Message(metaclass=ABCMeta):
@@ -65,6 +66,8 @@ class Message(metaclass=ABCMeta):
             return ForwardedMulticastData.read_body(reader)
         elif message_type == MessageType.FORWARDED_UNICAST_DATA:
             return ForwardedUnicastData.read_body(reader)
+        elif message_type == MessageType.HEARTBEAT:
+            return Heartbeat.read_body(reader)
         else:
             raise RuntimeError(f'Invalid message type {message_type}')
 
@@ -530,4 +533,40 @@ class ForwardedUnicastData(Message):
             self.client_id == value.client_id and
             self.topic == value.topic and
             self.data_packets == value.data_packets
+        )
+
+
+class Heartbeat(Message):
+    """A heartbeat message"""
+
+    def __init__(
+            self,
+            count: int,
+    ) -> None:
+        """A heartbeat message
+
+        Args:
+            count (int): The heartbeat count.
+        """
+        super().__init__(MessageType.HEARTBEAT)
+        self.count = count
+
+    @classmethod
+    def read_body(cls, reader: DataReader) -> Message:
+        count = reader.read_unsigned_long()
+        return Heartbeat(count)
+
+    def write_body(self, writer: DataWriter) -> None:
+        writer.write_unsigned_long(self.count)
+
+    def __repr__(self) -> str:
+        return f'Heartbeat({self.count!r})'
+
+    def __str__(self) -> str:
+        return f'{self.count=}'
+
+    def __eq__(self, value: Any) -> bool:
+        return (
+            isinstance(value, Heartbeat) and
+            self.count == value.count
         )
