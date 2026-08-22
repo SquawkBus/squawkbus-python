@@ -124,6 +124,8 @@ class BaseClient(metaclass=ABCMeta):
 
     async def wait_closed(self) -> None:
         if self._process_task is not None:
+            await self._read_queue.join()
+            await self._write_queue.join()
             await self._process_task
 
     def close(self) -> None:
@@ -331,9 +333,11 @@ class BaseClient(metaclass=ABCMeta):
 
     async def _dequeue(self) -> Message:
         message = await self._read_queue.get()
+        self._read_queue.task_done()
         return message
 
     async def _write(self):
         message = await self._write_queue.get()
         buf = message.serialize()
         await self._frame_stream.write(buf)
+        self._write_queue.task_done()
